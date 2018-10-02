@@ -1,0 +1,107 @@
+<?php
+/**
+ * Day type.
+ */
+namespace Form;
+
+use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\Extension\Core\Type\CollectionType;
+use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints as Assert;
+
+/**
+ * Class DayType
+ *
+ * @package Form
+ */
+class DayType extends AbstractType
+{
+    /**
+     * Builds the form.
+     *
+     * @param \Symfony\Component\Form\FormBuilderInterface $builder The form builder
+     * @param array                                        $options The options
+     */
+    public function buildForm(FormBuilderInterface $builder, array $options)
+    {
+        $builder
+            ->add(
+                'weekday',
+                ChoiceType::class,
+                [
+                    'label' => 'label.weekday',
+                    'required' => true,
+                    'choices' => [
+                        'label.monday' => 0,
+                        'label.thursday' => 1,
+                        'label.wednesday' => 2,
+                        'label.tuesday' => 3,
+                        'label.friday' => 4,
+                        'label.saturday' => 5,
+                        'label.sunday' => 6,
+                    ],
+                    'expanded' => false,
+                    'multiple' => false,
+                    'constraints' => [
+                        new Assert\Choice(
+                            [
+                                'groups' => ['day-default'],
+                                'choices' => [0, 1, 2, 3, 4, 5, 6],
+                            ]
+                        ),
+                    ],
+                ]
+            )->add(
+                'exercises',
+                CollectionType::class,
+                [
+                    'label' => 'label.exercises',
+                    'entry_type' => ExerciseType::class,
+                    'allow_add' => true,
+                    'allow_delete' => true,
+                    'prototype' => true,
+                    'prototype_name' => 'exercise__name__',
+                    'label_attr' => [
+                        'class' => 'sr-only',
+                    ],
+                ]
+            )->add(
+                'save',
+                SubmitType::class,
+                [
+                    'label' => 'action.confirm',
+                    'attr' => [
+                        'class' => 'btn btn-success',
+                    ],
+                ]
+            );
+        $builder->get('exercises')->addModelTransformer(new ExercisesDataTransformer($options['exercise_repository']));
+    }
+
+    /**
+     * Configures the options for this type.
+     *
+     * @param \Symfony\Component\OptionsResolver\OptionsResolver $resolver The resolver for the options
+     */
+    public function configureOptions(OptionsResolver $resolver)
+    {
+        $resolver->setDefaults(
+            [
+                'validation_groups' => 'day-default',
+                'exercise_repository' => null,
+            ]
+        );
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getBlockPrefix()
+    {
+        return 'day_type';
+    }
+}
+

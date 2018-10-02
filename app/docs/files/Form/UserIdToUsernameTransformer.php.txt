@@ -1,0 +1,80 @@
+<?php
+/**
+ * Users data transformer.
+ */
+namespace Form;
+
+use Repository\UserRepository;
+use Symfony\Component\Form\DataTransformerInterface;
+use Symfony\Component\Form\Exception\TransformationFailedException;
+
+/**
+ * Class UserIdToUsernameTransformer
+ *
+ * @package Form
+ */
+class UserIdToUsernameTransformer implements DataTransformerInterface
+{
+    /**
+     * User repository.
+     *
+     * @var UserRepository|null $userRepository
+     */
+    protected $userRepository = null;
+
+    /**
+     * UserIdToUsernameTransformer constructor.
+     *
+     * @param UserRepository $userRepository User repository
+     */
+    public function __construct(UserRepository $userRepository)
+    {
+        $this->userRepository = $userRepository;
+    }
+
+    /**
+     * Transform users Ids to usernames.
+     *
+     * @param mixed $users
+     *
+     * @return mixed|string
+     */
+    public function transform($users)
+    {
+        if (null == $users) {
+            return '';
+        }
+
+        if (is_string($users)) {
+            return $users;
+        }
+
+        $usernames = [];
+
+        foreach ($users as $user) {
+            $usernames[] = $user['login'];
+        }
+
+        return implode(',', $usernames);
+    }
+
+    /**
+     * Transform username to user Id.
+     *
+     * @param mixed $username
+     *
+     * @return mixed
+     */
+    public function reverseTransform($username)
+    {
+        if (trim($username) !== '') {
+            $user = $this->userRepository->findUserIdByUsername($username);
+        }
+        if (isset($user)) {
+            throw new TransformationFailedException(sprintf('An issue with number "%s" does not exist!', $username));
+        }
+
+        return isset($user) ? $user['user_id'] : [];
+    }
+}
+

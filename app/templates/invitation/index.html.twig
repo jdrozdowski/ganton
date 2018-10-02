@@ -1,0 +1,48 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ ' | ' ~ 'title.invitations'|trans }}{% endblock %}
+
+{% block active_workout 'navigation__link--active' %}
+
+{% block content %}
+    <header class="subpage-header clearfix">
+        <h2 class="subpage-header__title pull-left">{{ 'title.invitations'|trans }}</h2>
+    </header>
+
+    <hr class="hr--dark">
+
+    {% if invitations|length %}
+        <table class="table table-hover">
+            <thead>
+            <tr>
+                <th>#</th>
+                <th>{{ 'label.user'|trans }}</th>
+                <th>{{ 'header.workout_date'|trans }}</th>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for invitation in invitations %}
+                <tr>
+                    <td>{{ loop.index }}</td>
+                    <td>{{ invitation.from_user.firstname ~ ' ' ~ invitation.from_user.surname ~ ' @' ~ invitation.from_user.login }}</td>
+                    <td>{{ invitation.due_date }}</td>
+                    <td>
+                        <a href="{{ url('invitation_accept', {'id': invitation.workout_id}) }}" class="btn btn-success btn-sm">
+                            <span class="glyphicon glyphicon-ok"></span> {{ 'action.accept'|trans }}
+                        </a>
+                        <a href="{{ url('invitation_delete', {'id': invitation.invitation_id}) }}" class="btn btn-danger btn-sm">
+                            <span class="glyphicon glyphicon-trash"></span> {{ 'action.delete'|trans }}
+                        </a>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+
+        {{ knp_pagination_render(invitations) }}
+
+    {% else %}
+        <p class="text-center">{{ 'message.records_not_found'|trans }}</p>
+    {% endif %}
+{% endblock content %}

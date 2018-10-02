@@ -1,0 +1,44 @@
+{% extends 'base.html.twig' %}
+
+{% block title %} | {{ 'title.auth_login'|trans }}{% endblock %}
+
+{% block body %}
+    {% include 'default/_flash_messages.html.twig' %}
+    {% form_theme form with ['bootstrap_3_layout.html.twig', 'form/form_errors.html.twig'] %}
+
+    <div class="vertical-center">
+        <header class="main-site-header text-center">
+            <h1><img src="{{ asset('images/site-logo.png') }}" alt="Ganton logo"></h1>
+        </header>
+
+        <main class="main-site-main container-fluid">
+            <div class="log-in row text-center">
+                <div class="col-md-4 col-md-offset-4 col-xs-12">
+
+                    {% if error is defined and error|length %}
+                        {% include 'default/_single_alert_message.html.twig' with {
+                        is_single_message: true,
+                        is_dismissible: false,
+                        type: 'danger',
+                        message: error,
+                        } %}
+                    {% endif %}
+
+                    <div class="log-in-form">
+                        {{ form_start(form, { method: 'post', action: path('auth_login_check') }) }}
+                            {{ form_widget(form) }}
+                            <input type="submit" value="{{ 'action.login'|trans }}" class="btn btn-block btn-primary">
+                        {{ form_end(form) }}
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="sign-up text-center">
+                <p class="sign-up-question">{{ 'message.not_have_account'|trans }}</p>
+                <a href="{{ url('user_register') }}" class="btn btn-default">{{ 'action.register'|trans }}</a>
+            </div>
+
+        </main>
+    </div>
+{% endblock body %}

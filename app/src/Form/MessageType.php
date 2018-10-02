@@ -1,0 +1,136 @@
+<?php
+/**
+ * Message type.
+ */
+namespace Form;
+
+use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints as Assert;
+
+/**
+ * Class MessageType
+ *
+ * @package Form
+ */
+class MessageType extends AbstractType
+{
+    /**
+     * Builds the form.
+     *
+     * @param \Symfony\Component\Form\FormBuilderInterface $builder The form builder
+     * @param array                                        $options The options
+     */
+    public function buildForm(FormBuilderInterface $builder, array $options)
+    {
+        $username = isset($_GET['username']) ? $_GET['username'] : '';
+
+        $builder
+            ->add(
+                'to_user_id',
+                TextType::class,
+                [
+                    'label' => 'label.receiver',
+                    'required' => true,
+                    'data' => $username,
+                    'attr' => [
+                        'max_length' => 30,
+                        'placeholder' => 'placeholder.message_username',
+                    ],
+                    'constraints' => [
+                        new Assert\NotBlank(
+                            [
+                                'groups' => ['message-default'],
+                            ]
+                        ),
+                        new Assert\Length(
+                            [
+                                'groups' => ['message-default'],
+                                'max' => '30',
+                            ]
+                        ),
+                    ],
+                ]
+            )
+            ->add(
+                'subject',
+                TextType::class,
+                [
+                    'label' => 'label.subject',
+                    'required' => true,
+                    'attr' => [
+                        'max_length' => 255,
+                    ],
+                    'constraints' => [
+                        new Assert\NotBlank(
+                            [
+                                'groups' => ['message-default'],
+                            ]
+                        ),
+                        new Assert\Length(
+                            [
+                                'groups' => ['message-default'],
+                                'min' => '1',
+                                'max' => '255',
+                            ]
+                        ),
+                    ],
+                ]
+            )
+            ->add(
+                'content',
+                TextareaType::class,
+                [
+                    'label' => 'label.content',
+                    'required' => true,
+                    'attr' => [
+                        'placeholder' => 'placeholder.message_content',
+                    ],
+                    'constraints' => [
+                        new Assert\NotBlank(
+                            [
+                                'groups' => ['message-default'],
+                            ]
+                        ),
+                    ],
+                ]
+            )->add(
+                'save',
+                SubmitType::class,
+                [
+                    'label' => 'action.send',
+                    'attr' => [
+                        'class' => 'btn btn-success',
+                    ],
+                ]
+            );
+        $builder->get('to_user_id')->addModelTransformer(new UserIdToUsernameTransformer($options['user_repository']));
+    }
+
+    /**
+     * Configures the options for this type.
+     *
+     * @param \Symfony\Component\OptionsResolver\OptionsResolver $resolver The resolver for the options
+     */
+    public function configureOptions(OptionsResolver $resolver)
+    {
+        $resolver->setDefaults(
+            [
+                'validation_groups' => 'message-default',
+                'user_repository' => null,
+            ]
+        );
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getBlockPrefix()
+    {
+        return 'message_type';
+    }
+}

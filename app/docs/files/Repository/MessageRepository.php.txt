@@ -1,0 +1,202 @@
+<?php
+/**
+ * Message repository.
+ */
+namespace Repository;
+
+use Doctrine\DBAL\Connection;
+
+/**
+ * Class MessageRepository
+ *
+ * @package Repository
+ */
+class MessageRepository
+{
+    /**
+     * Doctrine DBAL Connection.
+     *
+     * @var \Doctrine\DBAL\Connection $db
+     */
+    protected $db;
+
+    /**
+     * User repository.
+     *
+     * @var null|\Repository\UserRepository $userRepository
+     */
+    protected $userRepository = null;
+
+    /**
+     * MessageRepository constructor.
+     *
+     * @param \Doctrine\DBAL\Connection $db
+     */
+    public function __construct($db)
+    {
+        $this->db = $db;
+        $this->userRepository = new UserRepository($db);
+    }
+
+    /**
+     * Authorization.
+     *
+     * @param int      $userId User Id
+     * @param null|int $id     Element Id
+     *
+     * @return array Result
+     */
+    public function authorize($userId, $id = null)
+    {
+        $queryBuilder = $this->db->createQueryBuilder();
+        $queryBuilder->select('m.message_id')
+            ->from('messages', 'm')
+            ->where('m.from_user_id = :user_id')
+            ->orWhere('m.to_user_id = :user_id')
+            ->setParameter(':user_id', $userId, \PDO::PARAM_INT);
+
+        if (null !== $id) {
+            $queryBuilder->andWhere('m.message_id = :id')
+                ->setParameter(':id', $id, \PDO::PARAM_INT);
+        }
+
+        $result = $queryBuilder->execute()->fetchAll();
+
+        return $result ? array_column($result, 'message_id') : [];
+    }
+
+    /**
+     * Fetch all received.
+     *
+     * @param int $userId User Id
+     *
+     * @return array Result
+     */
+    public function findReceived($userId)
+    {
+        $ids = $this->authorize($userId);
+
+        if ($ids) {
+            $queryBuilder = $this->db->createQueryBuilder();
+            $queryBuilder->select('m.message_id', 'm.from_user_id as interlocutor_id', 'm.subject', 'm.date', 'm.content')
+                ->from('messages', 'm')
+                ->where('m.to_user_id = :user_id')
+                ->andWhere('m.message_id IN (:ids)')
+                ->orderBy('m.date', 'DESC')
+                ->setParameter(':user_id', $userId)
+                ->setParameter(':ids', $ids, Connection::PARAM_INT_ARRAY);
+
+            $result = $queryBuilder->execute()->fetchAll();
+
+            if ($result) {
+                foreach ($result as &$message) {
+                    $message['interlocutor'] = $this->userRepository->findNameAndSurnameAndUsernameById($message['interlocutor_id']);
+                }
+                unset($message);
+            }
+        }
+
+        return isset($result) ? $result : [];
+    }
+
+    /**
+     * Fetch all sent.
+     *
+     * @param int $userId User Id
+     *
+     * @return array Result
+     */
+    public function findSent($userId)
+    {
+        $ids = $this->authorize($userId);
+
+        if ($ids) {
+            $queryBuilder = $this->db->createQueryBuilder();
+            $queryBuilder->select('m.message_id', 'm.to_user_id as interlocutor_id', 'm.subject', 'm.date', 'm.content')
+                ->from('messages', 'm')
+                ->where('m.from_user_id = :user_id')
+                ->andWhere('m.message_id IN (:ids)')
+                ->orderBy('m.date', 'DESC')
+                ->setParameter(':user_id', $userId)
+                ->setParameter(':ids', $ids, Connection::PARAM_INT_ARRAY);
+
+            $result = $queryBuilder->execute()->fetchAll();
+
+            if ($result) {
+                foreach ($result as &$message) {
+                    $message['interlocutor'] = $this->userRepository->findNameAndSurnameAndUsernameById($message['interlocutor_id']);
+                }
+                unset($message);
+            }
+        }
+
+        return isset($result) ? $result : [];
+    }
+
+    /**
+     * Fetch one record.
+     *
+     * @param int    $userId User Id
+     * @param string $id     Element id
+     *
+     * @return array|mixed Result
+     */
+    public function findOneById($userId, $id)
+    {
+        if (!$this->authorize($userId, $id)) {
+            return [];
+        }
+
+        $queryBuilder = $this->queryAll();
+        $queryBuilder->where('m.message_id = :message_id')
+            ->setParameter(':message_id', $id, \PDO::PARAM_INT);
+
+        $result = $queryBuilder->execute()->fetch();
+
+        if ($result) {
+            $result['sender'] = $this->userRepository->findNameAndSurnameAndUsernameById($result['from_user_id']);
+            $result['receiver'] = $this->userRepository->findNameAndSurnameAndUsernameById($result['to_user_id']);
+        }
+
+        return $result;
+    }
+
+    /**
+     * Save record.
+     *
+     * @param array $message Message
+     *
+     * @return int Result
+     */
+    public function save($message)
+    {
+        $currentDateTime = new \DateTime();
+        $message['date'] = $currentDateTime->format('Y-m-d H:i:s');
+
+        return $this->db->insert('messages', $message);
+    }
+
+    /**
+     * Remove record.
+     *
+     * @param array $message Message
+     */
+    public function delete($message)
+    {
+        $this->db->delete('messages', ['message_id' => $message['message_id']]);
+    }
+
+    /**
+     * Query all records.
+     *
+     * @return \Doctrine\DBAL\Query\QueryBuilder Result
+     */
+    protected function queryAll()
+    {
+        $queryBuilder = $this->db->createQueryBuilder();
+
+        return $queryBuilder->select('m.message_id', 'm.from_user_id', 'm.to_user_id', 'm.subject', 'm.date', 'm.content')
+            ->from('messages', 'm');
+    }
+}
+

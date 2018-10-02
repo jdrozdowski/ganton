@@ -1,0 +1,28 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ ' | ' ~ 'title.comment_add' }}{% endblock %}
+
+{% block active_workout 'navigation__link--active' %}
+
+{% block content %}
+    <header class="subpage-header">
+        <h2 class="subpage-header__title subpage-header__title--small">{{ 'title.workouts'|trans }}</h2>
+        <h3 class="subpage-header__title">{{ 'title.comment_add'|trans}}</h3>
+    </header>
+
+    <hr class="hr--dark">
+
+    <div class="row">
+        <div class="col-md-5 col-md-offset-3">
+            {% form_theme form 'bootstrap_3_layout.html.twig' %}
+            {{ form_start(form, { method: 'post', action: url('comment_add', {'slug': workout_id}) }) }}
+                {{ form_errors(form) }}
+                {{ form_widget(form) }}
+                <input type="submit" value="{{ 'action.save'|trans }}" class="btn btn-success">
+                <a href="{{ url('routine_index') }}" class="btn btn-danger pull-right">
+                    <span class="glyphicon glyphicon-remove"></span> {{ 'label.cancel'|trans}}
+                </a>
+            {{ form_end(form) }}
+        </div>
+    </div>
+{% endblock content %}

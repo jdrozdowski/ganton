@@ -1,0 +1,23 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ ' | ' ~ 'title.workout_delete'|trans }}{% endblock %}
+
+{% block content %}
+    {% form_theme form with ['bootstrap_3_horizontal_layout.html.twig', 'form/form_errors.html.twig'] %}
+
+    <header class="subpage-header">
+        <h2 class="subpage-header__title subpage-header__title--small">{{ 'title.workouts'|trans }}</h2>
+        <h3 class="subpage-header__title">{{ 'title.workout_delete'|trans}}</h3>
+    </header>
+
+    <hr class="hr--dark">
+
+    {{ form_start(form, { method: 'post', action: url('workout_delete', {'id': workout.workout_id}) }) }}
+        {{ form_widget(form) }}
+        <input type="submit" value="{{ 'action.delete'|trans }}" class="btn btn-success">
+    {{ form_end(form) }}
+
+    <a href="{{ url('workout_view', {'id' : workout.workout_id}) }}" class="btn btn-danger pull-right">
+        <span class="glyphicon glyphicon-remove"></span> {{ 'label.cancel'|trans}}
+    </a>
+{% endblock %}

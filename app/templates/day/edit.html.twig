@@ -1,0 +1,41 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ ' | ' ~ 'title.day_edit'|trans }}{% endblock %}
+
+{% block active_routine 'navigation__link--active' %}
+
+{% block content %}
+    <header class="subpage-header">
+        <h2 class="subpage-header__title subpage-header__title--small">{{ 'title.routines'|trans}}</h2>
+        <h3 class="subpage-header__title">{{ 'title.day_edit'|trans}}</h3>
+    </header>
+
+    <hr class="hr--dark">
+
+    {% form_theme form with ['bootstrap_3_horizontal_layout.html.twig'] %}
+    <div class="row">
+        <div class="col-md-8 col-md-offset-2">
+            {{ form_start(form, { method: 'post', action: url('day_edit', {'slug': day.workout_routine_id, 'id': day.workout_day_id}) }) }}
+                {{ form_errors(form) }}
+                {{ form_row(form.weekday) }}
+            <fieldset>
+                <legend>{{ 'label.exercises'|trans }}</legend>
+                <ul class="exercises" data-prototype="{{ form_widget(form.exercises.vars.prototype)|e('html_attr') }}">
+                    {% for exercise in form.exercises %}
+                        <li>
+                            {{ form_errors(exercise) }}
+                            {{ form_widget(exercise) }}
+                            <a href="#" class="remove-tag btn btn-sm btn-danger"><span class="glyphicon glyphicon-trash"></span></a>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </fieldset>
+            {{ form_end(form) }}
+            <a href="{{ url('routine_edit', {'id': day.workout_routine_id}) }}" class="btn btn-warning pull-right">
+                {{ 'label.cancel'|trans}}
+            </a>
+        </div>
+    </div>
+
+{% endblock content%}
+

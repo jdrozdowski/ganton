@@ -1,0 +1,43 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title ' | Statystyki ćwiczeń' %}
+
+{% block active_exercise 'navigation__link--active' %}
+
+{% block content %}
+
+    <header class="subpage-header">
+        <h2 class="subpage-header__title">Statystyki ćwiczeń</h2>
+    </header>
+
+    <hr class="hr--dark">
+
+        {% if exercises|length %}
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Ćwiczenie</th>
+                        <th><i class="fa fa-star fa-star--record"></i> Rekord [kg]</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for exercise in exercises %}
+                        <tr>
+                            <td class="table__row--index">{{ loop.index }}</td>
+                            <td>{{ exercise.name|capitalize }}</td>
+                            <td>{{ exercise.record|default('-') }}</td>
+                            <td>
+                                <a href="{{ url('admin_exercise_edit', {'id': exercise.exercise_id}) }}" class="btn btn-warning btn-sm">
+                                    <span class="glyphicon glyphicon-pencil"></span> {{ 'action.edit'|trans }}
+                                </a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <p>Brak ćwiczeń!</p>
+        {% endif %}
+{% endblock content %}

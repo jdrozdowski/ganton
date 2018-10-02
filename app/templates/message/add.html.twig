@@ -1,0 +1,27 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ ' | ' ~ 'title.message_add'|trans}}{% endblock %}
+
+{%  block active_message 'navigation__link--active' %}
+
+{% block content %}
+    {% form_theme form with ['bootstrap_3_horizontal_layout.html.twig', 'form/form_errors.html.twig'] %}
+
+    <header class="subpage-header">
+        <h2 class="subpage-header__title subpage-header__title--small">{{ 'title.messages'|trans}}</h2>
+        <h3 class="subpage-header__title">{{ 'title.message_add'|trans}}</h3>
+    </header>
+
+    <hr class="hr--dark">
+
+    <div class="row">
+        <div class="col-md-8 col-md-offset-1">
+            {{ form_start(form, { method: 'post', action: url('message_add') }) }}
+                {{ form_widget(form) }}
+            {{ form_end(form) }}
+            <a href="{{ url('message_index') }}" class="btn btn-danger pull-right">
+                <span class="glyphicon glyphicon-remove"></span> {{ 'label.cancel'|trans}}
+            </a>
+        </div>
+    </div>
+{% endblock content %}

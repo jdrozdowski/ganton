@@ -1,0 +1,77 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ ' | '~ 'title.routine_edit'|trans}}{% endblock %}
+
+{% block active_routine 'navigation__link--active' %}
+
+{% block content %}
+    {% form_theme form with ['bootstrap_3_horizontal_layout.html.twig', 'form/form_errors.html.twig'] %}
+
+    <header class="subpage-header clearfix">
+        <h2 class="subpage-header__title subpage-header__title--small">{{ 'title.routines'|trans }}</h2>
+        <h3 class="subpage-header__title pull-left">{{ 'title.routine_edit'|trans }}</h3>
+        <a href="{{ url('routine_view', {'id': routine.workout_routine_id}) }}" class="btn btn-warning pull-right">
+            {{ 'label.finish'|trans}}
+        </a>
+    </header>
+
+    <hr class="hr--dark">
+
+    <div class="row">
+        <div class="col-md-8 col-md-offset-1">
+            {{ form_start(form, { method: 'post', action: url('routine_edit', {'id': routine.workout_routine_id}) }) }}
+                {{ form_widget(form) }}
+            {{ form_end(form) }}
+        </div>
+    </div>
+
+    <section>
+        <div class="clearfix">
+            <h4 class="pull-left">{{ 'title.days'|trans }}</h4>
+            <a href="{{ url('day_add', {'slug': routine.workout_routine_id}) }}" class="btn btn-sm btn-success pull-right">
+                <span class="glyphicon glyphicon-plus"></span>
+            </a>
+        </div>
+
+        <hr class="hr--dark">
+
+        {% for day in routine.days %}
+            <table class="table table-hover">
+                <caption class="text-uppercase clearfix">
+                    {{ ('label.' ~ day.weekday)|trans }}
+
+                    <div class="pull-right">
+                        <a href="{{ url('day_edit', {'slug' : routine.workout_routine_id, 'id': day.workout_day_id}) }}" class="btn btn-sm btn-warning">
+                            <span class="glyphicon glyphicon-pencil"></span>
+                        </a>
+                        <a href="{{ url('day_delete', {'slug' : routine.workout_routine_id, 'id': day.workout_day_id}) }}" class="btn btn-sm btn-danger">
+                            <span class="glyphicon glyphicon-trash"></span>
+                        </a>
+                    </div>
+                </caption>
+                <thead>
+                <tr>
+                    <th>#</th>
+                    <th class="table__row--name">{{ 'label.exercise'|trans }}</th>
+                    <th>{{ 'label.sets'|trans }}</th>
+                    <th>{{ 'label.reps'|trans }}</th>
+                    <th>{{ 'label.weight'|trans }}</th>
+                    <th><i class="fa fa-star fa-star--record"></i> {{ 'label.record'|trans }}</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for exercise in day.exercises %}
+                    <tr>
+                        <td>{{ loop.index }}</td>
+                        <td class="table__row--name text-capitalize">{{ exercise.name }}</td>
+                        <td>{{ exercise.sets }}</td>
+                        <td>{{ exercise.reps }}</td>
+                        <td>{{ exercise.weight|default('-') }}</td>
+                        <td>{{ exercise.record|default('-') }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        {% endfor %}
+    </section>
+{% endblock content %}

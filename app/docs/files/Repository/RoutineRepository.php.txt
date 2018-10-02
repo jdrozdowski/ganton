@@ -1,0 +1,336 @@
+<?php
+/**
+ * Routine repository.
+ */
+namespace Repository;
+
+use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\DBALException;
+
+/**
+ * Class RoutineRepository
+ *
+ * @package Repository
+ */
+class RoutineRepository
+{
+    /**
+     * Doctrine DBAL Connection.
+     *
+     * @var \Doctrine\DBAL\Connection $db
+     */
+    protected $db;
+
+    /**
+     * Day repository.
+     *
+     * @var null|\Repository\DayRepository $dayRepository
+     */
+    protected $dayRepository = null;
+
+    /**
+     * User repository.
+     *
+     * @var null|\Repository\UserRepository $userRepository
+     */
+    protected $userRepository = null;
+
+    /**
+     * RoutineRepository constructor.
+     *
+     * @param \Doctrine\DBAL\Connection $db
+     */
+    public function __construct(Connection $db)
+    {
+        $this->db = $db;
+        $this->dayRepository = new DayRepository($db);
+        $this->userRepository = new UserRepository($db);
+    }
+
+    /**
+     * Assign a routine to a user.
+     *
+     * @param array|int $routine Routine
+     *
+     * @return int
+     */
+    public function assign($routine)
+    {
+        return $this->db->insert('users_has_workout_routines', $routine);
+    }
+
+    /**
+     * Fetch all records by type.
+     *
+     * @param string $type   Sort type
+     * @param int    $userId User Id
+     *
+     * @return array Result
+     */
+    public function findAll($type, $userId = null)
+    {
+        $queryBuilder = $this->queryAll();
+
+        if ($type === 'all') {
+            $queryBuilder->where('r.is_public = 1');
+        } elseif ($type === 'mine') {
+            $queryBuilder->where('r.author = :user_id')
+                ->setParameter(':user_id', $userId);
+        } elseif ($type === 'available') {
+            $routinesIds = $this->findLinkedRoutinesByUserId($userId);
+
+            $queryBuilder->where('r.workout_routine_id IN (:ids)')
+                ->setParameter(':ids', $routinesIds, Connection::PARAM_INT_ARRAY);
+        }
+
+        $result = $queryBuilder->execute()->fetchAll();
+
+        if ($result) {
+            foreach ($result as &$routine) {
+                $routine['author_data'] = $this->userRepository->findNameAndSurnameAndUsernameById($routine['author']);
+            }
+            unset($routine);
+        }
+
+        return $result;
+    }
+
+    /**
+     * Fetch one record with editable data.
+     *
+     * @param int $userId User Id
+     * @param int $id     Element Id
+     *
+     * @return array|mixed Result
+     */
+    public function findEditableDataById($userId, $id)
+    {
+        if (!$this->isAuthor($userId, $id)) {
+            return [];
+        }
+
+        $queryBuilder = $this->db->createQueryBuilder();
+        $queryBuilder->select('r.workout_routine_id', 'r.name', 'r.is_public')
+            ->from('workout_routines', 'r')
+            ->where('r.workout_routine_id = :id')
+            ->setParameter(':id', $id, \PDO::PARAM_INT);
+
+        $result = $queryBuilder->execute()->fetch();
+
+        if ($result) {
+            $result['days'] = $this->findLinkedDays($id);
+        }
+
+        return $result;
+    }
+
+    /**
+     * Find one record by id.
+     *
+     * @param int    $userId User Id
+     * @param string $id     Element Id
+     *
+     * @return array|mixed Result
+     */
+    public function findOneById($userId, $id)
+    {
+        $queryBuilder = $this->queryAll();
+
+        if ($this->findLinkedRoutinesByUserId($userId, $id)) {
+            $queryBuilder->where('r.workout_routine_id = :id')
+                ->setParameter(':id', $id, \PDO::PARAM_INT);
+
+            $result = $queryBuilder->execute()->fetch();
+        } elseif (!$this->isAuthor($userId, $id)) {
+            $queryBuilder->where('r.workout_routine_id = :id')
+                ->andWhere('r.is_public = 1')
+                ->setParameter(':id', $id, \PDO::PARAM_INT);
+
+            $result = $queryBuilder->execute()->fetch();
+        } else {
+            $queryBuilder->where('r.workout_routine_id = :id')
+                ->setParameter(':id', $id, \PDO::PARAM_INT);
+
+            $result = $queryBuilder->execute()->fetch();
+        }
+
+        if ($result) {
+            $result['days'] = $this->findLinkedDays($id);
+            $result['author_data'] = $this->userRepository->findNameAndSurnameAndUsernameById($result['author']);
+        }
+
+
+
+        return isset($result) ? $result : [];
+    }
+
+    /**
+     * Remove record.
+     *
+     * @param int $id Element Id
+     *
+     * @throws \Doctrine\DBAL\DBALException
+     */
+    public function delete($id)
+    {
+        $this->db->beginTransaction();
+
+        try {
+            $this->removeLinkedDays($id);
+            $this->removeLinkedUser($id);
+            $this->db->delete('workout_routines', ['workout_routine_id' => $id]);
+            $this->db->commit();
+        } catch (DBALException $e) {
+            $this->db->rollBack();
+            throw $e;
+        }
+    }
+
+    /**
+     * Insert number of days.
+     *
+     * @param int $id     Element Id
+     * @param int $number Number of days
+     *
+     * @return int Result
+     */
+    public function insertNumberOfDays($id, $number)
+    {
+        return $this->db->update(
+            'workout_routines',
+            ['number_of_days' => $number],
+            ['workout_routine_id' => $id]
+        );
+    }
+
+    /**
+     * Fetch if is author.
+     *
+     * @param int $userId User Id
+     * @param int $id     Element Id
+     *
+     * @return mixed Result
+     */
+    public function isAuthor($userId, $id)
+    {
+        $queryBuilder = $this->queryAll();
+        $queryBuilder->where('r.author = :user_id')
+            ->andWhere('r.workout_routine_id = :id')
+            ->setParameter(':user_id', $userId)
+            ->setParameter(':id', $id);
+
+        return $queryBuilder->execute()->fetch();
+    }
+
+    /**
+     * Save record.
+     *
+     * @param array $routine Routine
+     *
+     * @return int Routine Id
+     */
+    public function save($routine)
+    {
+        if (isset($routine['workout_routine_id']) && ctype_digit((string) $routine['workout_routine_id'])) {
+            $id = $routine['workout_routine_id'];
+            unset($routine['days'], $routine['workout_routine_id']);
+
+            return $this->db->update('workout_routines', $routine, ['workout_routine_id' => $id]);
+        } else {
+            $this->db->insert('workout_routines', $routine);
+
+            return $this->db->lastInsertId();
+        }
+    }
+
+    /**
+     * Fetch linked days data.
+     *
+     * @param int $id Element Id
+     *
+     * @return array Result
+     */
+    protected function findLinkedDays($id)
+    {
+        return $this->dayRepository->findAllByRoutineId($id);
+    }
+
+    /**
+     * Fetch linked days ids.
+     *
+     * @param int $id Element Id
+     *
+     * @return array Result
+     */
+    protected function findLinkedDaysIds($id)
+    {
+        return $this->dayRepository->findIdsByRoutineId($id);
+    }
+
+    /**
+     * Fetch routines ids by user id.
+     *
+     * @param int $userId User Id
+     * @param null|int $id
+     *
+     * @return array
+     */
+    protected function findLinkedRoutinesByUserId($userId, $id = null)
+    {
+        $queryBuilder = $this->db->createQueryBuilder();
+
+        $queryBuilder->select('ur.workout_routine_id')
+            ->from('users_has_workout_routines', 'ur')
+            ->where('ur.user_id = :user_id')
+            ->setParameter(':user_id', $userId, \PDO::PARAM_INT);
+
+        if (null !== $id) {
+            $queryBuilder->andWhere('ur.workout_routine_id = :id')
+                ->setParameter(':id', $id, \PDO::PARAM_INT);
+        }
+
+        $result = $queryBuilder->execute()->fetchAll();
+
+        return $result ? array_column($result, 'workout_routine_id') : [];
+    }
+
+    /**
+     * Remove linked days.
+     *
+     * @param int $id Element Id
+     */
+    protected function removeLinkedDays($id)
+    {
+        $ids = $this->findLinkedDaysIds($id);
+
+        foreach ($ids as $id) {
+            $this->dayRepository->delete($id);
+        }
+    }
+
+    /**
+     * Remove linked user.
+     *
+     * @param int $id Element Id
+     *
+     * @return int Result
+     */
+    protected function removeLinkedUser($id)
+    {
+        return $this->db->delete('users_has_workout_routines', ['workout_routine_id' => $id]);
+    }
+
+    /**
+     * Query all records.
+     *
+     * @return \Doctrine\DBAL\Query\QueryBuilder Result
+     */
+    protected function queryAll()
+    {
+        $queryBuilder = $this->db->createQueryBuilder();
+
+        return $queryBuilder->select('r.workout_routine_id', 'r.name', 'r.number_of_days', 'r.author')
+            ->from('workout_routines', 'r');
+    }
+}
+

@@ -1,0 +1,124 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ ' | ' ~ 'title.workout'|trans }}{% endblock %}
+
+{% block active_calendar 'navigation__link--active' %}
+
+{% block content %}
+    <header class="subpage-header">
+        {% if workout|length %}
+            <h2 class="subpage-header__title subpage-header__title--small">{{ 'title.workouts'|trans }}</h2>
+            <div class="clearfix">
+                <h3 class="subpage-header__title pull-left">
+                    {{ workout.due_date|date('d.m.Y H:i') }}
+                </h3>
+
+                <div class="pull-right">
+                    <a href="{{ url('workout_invite', {'id': workout.workout_id}) }}" class="btn btn-primary">
+                        <span class="glyphicon glyphicon-envelope"></span> {{ 'action.invite'|trans }}
+                    </a>
+                    <a href="{{ url('workout_edit', {'id': workout.workout_id}) }}" class="btn btn-warning">
+                        <span class="glyphicon glyphicon-pencil"></span> {{ 'action.edit'|trans }}
+                    </a>
+                    <a href="{{ url('workout_delete', {'id': workout.workout_id}) }}" class="btn btn-danger">
+                        <span class="glyphicon glyphicon-trash"></span> {{ 'action.delete'|trans }}
+                    </a>
+                </div>
+            </div>
+
+        {% else %}
+            <h2 class="subpage-header__title">{{ 'title.workouts'|trans }}</h2>
+        {% endif %}
+    </header>
+
+    <hr class="hr--dark">
+
+    {% if workout|length %}
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>{{ 'label.exercise'|trans }}</th>
+                    <th>{{ 'label.sets'|trans }}</th>
+                    <th>{{ 'label.reps'|trans }}</th>
+                    <th>{{ 'label.weight'|trans }}</th>
+                    <th><i class="fa fa-star fa-star--record"></i> {{ 'label.record'|trans }}</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for exercise in workout.exercises %}
+                    <tr>
+                        <td>{{ loop.index }}</td>
+                        <td class="text-capitalize">{{ exercise.name }}</td>
+                        <td>{{ exercise.sets }}</td>
+                        <td>{{ exercise.reps }}</td>
+                        <td>{{ exercise.weight|default('-') }}</td>
+                        <td>{{ exercise.record|default('-') }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <hr class="hr--dark">
+
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">{{ 'header.summary'|trans }}</h3>
+            </div>
+
+            <table class="table table-bordered">
+                <tr>
+                    <td>
+                        <p class="cell--large">{{ workout.sets_amount}}</p>
+                        {{ 'label.sets_short'|trans }}
+                    </td>
+                    <td>
+                        <p class="cell--large">{{ workout.reps_amount}}</p>
+                        {{ 'label.reps_short'|trans }}
+                    </td>
+                    <td>
+                        <p class="cell--large">{{ workout.weight_amount }}</p>
+                        <p>kg</p>
+                    </td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="panel panel-default">
+            <div class="panel-heading clearfix">
+                <h3 class="panel-title pull-left">{{ 'header.comments'|trans }}</h3>
+                <a href="{{ url('comment_add', {'slug': workout.workout_id}) }}" class="btn btn-sm btn-success pull-right">
+                    <span class="glyphicon glyphicon-plus"></span>
+                </a>
+            </div>
+
+            <ul class="list-group">
+                {% for comment in workout.comments %}
+                <li class="list-group-item clearfix">
+                    <div class="pull-left">
+                        <a href="{{ url('user_view', {'id': comment.user_id}) }}">
+                            <b>{{ comment.author_data.firstname ~ ' ' ~ comment.author_data.surname }}
+                                <small> @{{ comment.author_data.login}}</small></b>
+                        </a>
+                        <p>{{ comment.content }}</p>
+                    </div>
+                    <div class="pull-right">
+                        <a href="{{ url('comment_edit', {'slug': workout.workout_id, 'id': comment.comment_id}) }}" class="btn btn-sm btn-warning">
+                            <span class="glyphicon glyphicon-pencil"></span>
+                        </a>
+                        <a href="{{ url('comment_delete', {'slug': workout.workout_id, 'id': comment.comment_id}) }}" class="btn btn-sm btn-danger">
+                            <span class="glyphicon glyphicon-trash"></span>
+                        </a>
+                    </div>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+    {% else %}
+        <p>{{ 'message.record_not_found'|trans }}</p>
+    {% endif %}
+
+    <a class="btn btn-default back-button" href="{{ url('workout_index') }}">
+        <i class="fa fa-long-arrow-left"></i> {{ 'label.back_to_list'|trans}}
+    </a>
+{% endblock content %}

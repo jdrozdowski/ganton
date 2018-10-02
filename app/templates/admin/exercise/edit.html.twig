@@ -1,0 +1,28 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}{{ ' | ' ~ 'title.exercise_edit'|trans}}{% endblock %}
+
+{% block active_society 'navigation__link--active' %}
+
+{% block content %}
+    {% form_theme form with ['bootstrap_3_horizontal_layout.html.twig', 'form/form_errors.html.twig'] %}
+
+    <header class="subpage-header clearfix">
+        <h2 class="subpage-header__title subpage-header__title--small">{{ 'title.exercises'|trans }}</h2>
+        <h3 class="subpage-header__title pull-left">{{ 'title.exercise_edit'|trans }}</h3>
+        <a href="{{ url('admin_exercise_index') }}" class="btn btn-warning pull-right">
+            {{ 'label.finish'|trans}}
+        </a>
+    </header>
+
+    <hr class="hr--dark">
+
+    <div class="row">
+        <div class="col-md-8 col-md-offset-1">
+            {{ form_start(form, { method: 'post', action: url('admin_exercise_edit', {'id': exercise_id}) }) }}
+                {{ form_widget(form) }}
+            <input type="submit" value="{{ 'action.edit'|trans }}" class="btn btn-success">
+            {{ form_end(form) }}
+        </div>
+    </div>
+{% endblock content %}

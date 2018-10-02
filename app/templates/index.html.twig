@@ -1,0 +1,36 @@
+{% extends "base.html.twig" %}
+
+{% block content %}
+    <header class="subpage-header clearfix">
+        <h2 class="subpage-header__title pull-left">{{ 'title.homepage'|trans}}</h2>
+    </header>
+
+    <hr class="hr--dark">
+
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="jumbotron">
+                <h3>{{ 'message.welcome'|trans }}</h3>
+                {% if notification|length %}
+                    <p>{{ 'notification.workout'|trans }}</p>
+                    <p><a class="btn btn-warning btn-lg" href="{{ url('workout_index') }}">{{ 'action.view'|trans }}</a></p>
+                {% else %}
+                    <p>{{ 'notification.no_workout'|trans }}</p>
+                    <p><a class="btn btn-warning btn-lg" href="{{ url('workout_add') }}">{{ 'action.save'|trans }}</a></p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    {% if is_granted('ROLE_ADMIN') %}
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="jumbotron">
+                    <h3>{{ 'message.welcome_admin'|trans }}</h3>
+                        <p>{{ 'message.go_to_admin_panel'|trans }}</p>
+                        <p><a class="btn btn-warning btn-lg" href="{{ url('admin_user_index') }}">{{ 'action.view'|trans }}</a></p>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+{% endblock content%}

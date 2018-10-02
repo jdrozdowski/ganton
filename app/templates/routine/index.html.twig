@@ -1,0 +1,76 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ ' | ' ~ 'title.routines'|trans }}{% endblock %}
+
+{% block active_routine 'navigation__link--active' %}
+
+{% block content %}
+    <header class="subpage-header">
+        <div class="clearfix">
+            <h2 class="subpage-header__title pull-left">{{ 'title.routines'|trans }}</h2>
+            <a href="{{ url('routine_add') }}" class="btn btn-success btn pull-right">
+                <span class="glyphicon glyphicon-plus"></span> {{ 'action.save'|trans }}
+            </a>
+        </div>
+
+        <nav class="navigation navigation--tabs">
+            <ul class="nav nav-tabs">
+                <li role="presentation" class="{{ type == 'all' ? 'active'}}">
+                    <a href="{{ url('routine_index', {'type': 'all'}) }}">{{ 'title.all'|trans }}</a>
+                </li>
+                <li role="presentation" class="{{ type == 'mine' ? 'active'}}">
+                    <a href="{{ url('routine_index', {'type': 'mine'}) }}">{{ 'title.mine'|trans }}</a>
+                </li>
+                <li role="presentation" class="{{ type == 'available' ? 'active'}}">
+                    <a href="{{ url('routine_index', {'type': 'available'}) }}">{{ 'title.available'|trans }}</a>
+                </li>
+            </ul>
+        </nav>
+    </header>
+
+    {% if routines|length %}
+        {% for routine in routines %}
+            <div class="panel panel-default">
+                <div class="panel-heading clearfix">
+                    <h3 class="panel-title pull-left">{{ routine.name }}</h3>
+                    <div class="pull-right">
+                        <a href="{{ url('routine_view', {'id': routine.workout_routine_id}) }}" class="btn btn-info btn-sm">
+                            <span class="glyphicon glyphicon-eye"></span> {{ 'action.view'|trans }}
+                        </a>
+                        {% if type != 'all' %}
+                            <a href="{{ url('routine_edit', {'id': routine.workout_routine_id}) }}" class="btn btn-warning btn-sm">
+                                <span class="glyphicon glyphicon-pencil"></span> {{ 'action.edit'|trans }}
+                            </a>
+                            <a href="{{ url('routine_delete', {'id': routine.workout_routine_id}) }}" class="btn btn-danger btn-sm">
+                                <span class="glyphicon glyphicon-trash"></span> {{ 'action.delete'|trans }}
+                            </a>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <table class="table table-bordered">
+                    <tr>
+                        <td class="panel-table__cell">
+                            {% if routine.author_data %}
+                                <a href="{{ url('user_view', {'id': routine.author}) }}" class="cell--large">
+                                    {{ routine.author_data.firstname ~ ' ' ~ routine.author_data.surname }}
+                                    <small>{{ ' @' ~ routine.author_data.login }}</small>
+                                </a>
+                            {% else %}
+                                {{ 'message.account_removed'|trans }}
+                            {% endif %}
+                            <p>{{ 'label.author'|trans }}</p>
+                        </td>
+                        <td class="panel-table__cell">
+                            <p class="cell--large">{{ routine.number_of_days|default(0) }}</p>
+                            {{ 'label.number_of_days'|trans }}
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        {% endfor %}
+        {{ knp_pagination_render(routines) }}
+    {% else %}
+        <p class="text-center">{{ 'message.records_not_found'|trans }}</p>
+    {% endif %}
+{% endblock content %}

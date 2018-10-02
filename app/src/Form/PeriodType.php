@@ -1,0 +1,61 @@
+<?php
+/**
+ * Period type.
+ */
+namespace Form;
+
+use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\DateType;
+use Symfony\Component\Form\FormBuilderInterface;
+
+/**
+ * Class PeriodType
+ *
+ * @package Form
+ */
+class PeriodType extends AbstractType
+{
+    /**
+     * Builds the form.
+     *
+     * @param \Symfony\Component\Form\FormBuilderInterface $builder The form builder
+     * @param array                                        $options The options
+     */
+    public function buildForm(FormBuilderInterface $builder, array $options)
+    {
+        $builder
+            ->add(
+                'begin',
+                DateType::class,
+                [
+                    'label' => 'label.begin',
+                    'input'  => 'datetime',
+                    'widget' => 'choice',
+                    'years' => [2016, 2017, 2018, 2019, 2020],
+                    'format' => 'yyyy-MMM-dd',
+                    'model_timezone' => 'UTC',
+                    'view_timezone' => 'UTC',
+                ]
+            )->add(
+                'end',
+                DateType::class,
+                [
+                    'label' => 'label.end',
+                    'input'  => 'datetime',
+                    'widget' => 'choice',
+                    'years' => [2016, 2017, 2018, 2019, 2020],
+                    'format' => 'yyyy-MMM-dd',
+                    'model_timezone' => 'UTC',
+                    'view_timezone' => 'UTC',
+                ]
+            );
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getBlockPrefix()
+    {
+        return 'period_type';
+    }
+}

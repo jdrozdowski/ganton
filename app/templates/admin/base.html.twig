@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <title>Ganton{% block title %}{% endblock %}</title>
+
+    {% block stylesheets %}
+        <!-- Normalize -->
+        <link href="{{ asset('css/normalize.css') }}" rel="stylesheet">
+        <!-- Bootstrap -->
+        <link href="{{ asset('css/bootstrap.min.css') }}" rel="stylesheet">
+        <!-- My CSS -->
+        <link href="{{ asset('css/styles.css') }}" rel="stylesheet">
+        <!-- Google Fonts -->
+        <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700&amp;subset=latin-ext" rel="stylesheet">
+    {% endblock %}
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+    <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Font Awesome -->
+    <script src="https://use.fontawesome.com/b8cbf27004.js"></script>
+</head>
+
+{% block body %}
+<body>
+    <div class="main-container">
+        <header class="header text-center">
+            <h1 class="header__title">
+                <a href="{{ url('homepage') }}">
+                    <img class="header__logo" src="{{ asset('images/site-logo.png') }}" alt="Ganton logo">
+                </a>
+            </h1>
+
+            <nav class="navigation navbar">
+                <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                    <ul class="navigation__list side-nav">
+                        <li class="list__element list__element--messages list__element--account">
+                            <a class="navigation__link navigation__link--account {% block active_account %}{% endblock %}" href="{{ url('user_view', {'id': app.user.id})}}">
+                                {{ app.user ? '@' ~ app.user.username : 'anonim' }}
+                            </a>
+                        </li>
+                        <li class="list__element">
+                            <a class="navigation__link {% block active_society %}{% endblock %}" href="{{ url('admin_user_index') }}">
+                                <i class="fa fa-users fa-2x navigation__icon"></i>{{ 'title.society'|trans }}
+                            </a>
+                        </li>
+                        <li class="list__element">
+                            <a class="navigation__link {% block active_invitation %}{% endblock %}" href="{{ url('admin_exercise_index') }}">
+                                <i class="fa fa-list fa-2x navigation__icon"></i>{{ 'title.exercises'|trans }}
+                            </a>
+                        </li>
+                        <li class="list__element">
+                            {% if is_granted('IS_AUTHENTICATED_FULLY') %}
+                            <a class="navigation__link" href="{{ url('auth_logout') }}" title="{{ 'auth.logout.label'|trans }}">
+                                <i class="fa fa-sign-out fa-2x navigation__icon"></i>{{ 'auth.logout.label'|trans }}
+                            </a>
+                            {% endif %}
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+        </header>
+
+        <main class="main-content">
+            <div class="container-fluid">
+                {% block content %}{% endblock %}
+            </div>
+        </main>
+    </div>
+
+    {% block javascripts %}
+        <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+        <!-- Include all compiled plugins (below), or include individual files as needed -->
+        <script src="{{ asset('js/bootstrap.min.js') }}"></script>
+        <script src="{{ asset('js/scripts.js') }}"></script>
+    {% endblock %}
+</body>
+{% endblock body %}
+</html>

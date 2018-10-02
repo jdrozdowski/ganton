@@ -1,0 +1,29 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}{{ ' | ' ~ 'title.user_edit'|trans}}{% endblock %}
+
+{% block active_society 'navigation__link--active' %}
+
+{% block content %}
+    {% form_theme form with ['bootstrap_3_horizontal_layout.html.twig', 'form/form_errors.html.twig'] %}
+
+    <header class="subpage-header clearfix">
+        <h2 class="subpage-header__title subpage-header__title--small">{{ 'title.society'|trans }}</h2>
+        <h3 class="subpage-header__title pull-left">{{ 'title.user_edit'|trans }}</h3>
+        <a href="{{ url('admin_user_index') }}" class="btn btn-warning pull-right">
+            {{ 'label.finish'|trans}}
+        </a>
+    </header>
+
+    <hr class="hr--dark">
+
+    <div class="row">
+        <div class="col-md-8 col-md-offset-1">
+            {{ form_start(form, { method: 'post', action: url('admin_user_edit', {'id': user.user_id}) }) }}
+                {{ form_row(form.login) }}
+                {{ form_row(form.role_id) }}
+                <input type="submit" value="{{ 'action.edit'|trans }}" class="btn btn-success">
+            {{ form_end(form) }}
+        </div>
+    </div>
+{% endblock content %}

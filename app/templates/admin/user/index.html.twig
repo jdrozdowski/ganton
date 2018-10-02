@@ -1,0 +1,69 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}{{ ' | ' ~ 'title.society'|trans }}{% endblock %}
+
+{% block active_society 'navigation__link--active' %}
+
+{% block content %}
+    {% form_theme form with ['bootstrap_3_horizontal_layout.html.twig', 'form/form_errors.html.twig'] %}
+
+    <header class="subpage-header">
+        <h2 class="subpage-header__title">{{ 'title.society'|trans }}</h2>
+    </header>
+
+    <div class="row">
+        <div class="col-md-5 col-md-offset-3">
+            {{ form_start(form, { method: 'post', action: url('admin_user_index') }) }}
+                {{ form_widget(form) }}
+            {{ form_end(form) }}
+        </div>
+    </div>
+
+    {% if users|length %}
+        <div class="panel panel-default">
+            <table class="table table-hover">
+                <thead>
+                <tr>
+                    <th>{{ 'label.user'|trans }}</th>
+                    <th></th>
+                    <th></th>
+                    <th>{{ 'label.location'|trans }}</th>
+                    <th>{{ 'label.birthdate'|trans }}</th>
+                    <th></th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for row in users %}
+                    <tr>
+                        <td class="td--bold text-capitalize">
+                            <p class="text-capitalize">{{ row.firstname ~ ' ' ~ row.surname }}</p>
+                        </td>
+                        <td>
+                            {{ '@' ~ row.login}}
+                        </td>
+                        <td class="text-success text-uppercase">
+                            {{ (row.name)|trans }}
+                        </td>
+                        <td class="text-capitalize">
+                            {{ row.location }}
+                        </td>
+                        <td>
+                            {{ row.birthdate|date('d-m-Y') }}
+                        </td>
+                        <td>
+                            <a href="{{ url('admin_user_edit', {'id': row.user_id}) }}" class="btn btn-warning btn-sm">
+                                <span class="glyphicon glyphicon-pencil"></span> {{ 'action.edit'|trans }}
+                            </a>
+                            <a href="{{ url('admin_user_change_password', {'id': row.user_id}) }}" class="btn btn-primary btn-sm">
+                                <span class="glyphicon glyphicon-pencil"></span> {{ 'action.change_password'|trans }}
+                            </a>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <p>{{ 'message.records_not_found'|trans }}</p>
+    {% endif %}
+{% endblock content %}

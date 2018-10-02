@@ -1,0 +1,93 @@
+<?php
+/**
+ * Login type.
+ */
+namespace Form;
+
+use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\PasswordType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints as Assert;
+
+/**
+ * Class LoginType
+ *
+ * @package Form
+ */
+class LoginType extends AbstractType
+{
+    /**
+     * Builds the form.
+     *
+     * @param \Symfony\Component\Form\FormBuilderInterface $builder The form builder
+     * @param array                                        $options The options
+     */
+    public function buildForm(FormBuilderInterface $builder, array $options)
+    {
+        $builder->add(
+            'login',
+            TextType::class,
+            [
+                'label' => 'label.login',
+                'required' => true,
+                'attr' => [
+                    'max_length' => 30,
+                ],
+                'constraints' => [
+                    new Assert\NotBlank(),
+                    new Assert\Length(
+                        [
+                            'min' => 6,
+                            'max' => 30,
+                        ]
+                    ),
+                ],
+            ]
+        );
+        $builder->add(
+            'password',
+            PasswordType::class,
+            [
+                'label' => 'label.password',
+                'required' => true,
+                'attr' => [
+                    'max_length' => 32,
+                ],
+                'constraints' => [
+                    new Assert\NotBlank(),
+                    new Assert\Length(
+                        [
+                            'min' => 8,
+                            'max' => 32,
+                        ]
+                    ),
+                ],
+            ]
+        );
+    }
+
+    /**
+     * Configures the options for this type.
+     *
+     * @param \Symfony\Component\OptionsResolver\OptionsResolver $resolver The resolver for the options
+     */
+    public function configureOptions(OptionsResolver $resolver)
+    {
+        $resolver->setDefaults(
+            [
+                'validation_groups' => 'login-default',
+            ]
+        );
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getBlockPrefix()
+    {
+        return 'login_type';
+    }
+}
+

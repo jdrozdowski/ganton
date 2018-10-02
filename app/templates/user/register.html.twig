@@ -1,0 +1,39 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ ' | ' ~ 'title.registration'|trans }}{% endblock %}
+
+{% block body %}
+    {% form_theme form with ['bootstrap_3_layout.html.twig', 'form/form_errors.html.twig'] %}
+
+    <div class="vertical-center">
+    <header class="main-site-header text-center">
+        <h1><img src="{{ asset('images/site-logo.png') }}" alt="Ganton logo"></h1>
+    </header>
+
+    <main class="main-site-main container-fluid">
+        <div class="log-in row text-center">
+            <div class="col-md-4 col-md-offset-4 col-xs-12">
+                <div class="log-in-form">
+                    {{ form_start(form, { method: 'post', action: url('user_register') }) }}
+                        {{ form_row(form.login) }}
+                        {{ form_row(form.plainPassword.first, {'label': 'label.password'}) }}
+                        {{ form_row(form.plainPassword.second, {'label': 'label.repeat_password'}) }}
+                        {{ form_row(form.firstname) }}
+                        {{ form_row(form.surname) }}
+                        {{ form_row(form.location) }}
+                        {{ form_row(form.birthdate) }}
+                        {{ form_row(form.height) }}
+                        {{ form_row(form.weight) }}
+                        <input type="submit" value="{{ 'action.register'|trans }}" class="btn btn-block btn-primary">
+                    {{ form_end(form) }}
+                </div>
+            </div>
+        </div>
+
+        <div class="sign-up text-center">
+            <p class="sign-up-question">{{ 'message.have_account'|trans }}</p>
+            <a href="{{ url('auth_login') }}" class="btn btn-default">{{ 'action.login'|trans }}</a>
+        </div>
+
+    </main>
+{% endblock body %}

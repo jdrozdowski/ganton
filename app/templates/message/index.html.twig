@@ -1,0 +1,64 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ ' | ' ~ 'title.messages'|trans}}{% endblock %}
+
+{% block active_message 'navigation__link--active' %}
+
+{% block content %}
+    <header class="subpage-header">
+        <div class="clearfix">
+            <h2 class="subpage-header__title pull-left">{{ 'title.messages'|trans}}</h2>
+
+            <a href="{{ url('message_add') }}" class="btn btn-success pull-right">
+                <span class="glyphicon glyphicon-pencil"></span> {{ 'title.message_add'|trans }}
+            </a>
+        </div>
+
+        <nav class="navigation navigation--tabs">
+            <ul class="nav nav-tabs">
+                <li role="presentation" class="{{ type == 'received' ? 'active'}}">
+                    <a href="{{ url('message_index', {'type': 'received'}) }}">{{ 'title.received'|trans }}</a>
+                </li>
+                <li role="presentation" class="{{ type == 'sent' ? 'active'}}">
+                    <a href="{{ url('message_index', {'type': 'sent'}) }}">{{ 'title.sent'|trans }}</a>
+                </li>
+            </ul>
+        </nav>
+    </header>
+
+    {% if messages|length %}
+        <ul class="list-group">
+            {% for row in messages %}
+                <li class="list-group-item clearfix">
+                        <div class="pull-left">
+                            <h3 class="list-group-item-heading">
+                                <a href="{{ url('message_view', {'id': row.message_id}) }}">
+                                    {{ row.subject }}
+                                </a>
+                            </h3>
+
+                            <p class="list-group-item-text">
+                                <a href="{{ url('user_view', {'id': row.interlocutor_id}) }}">
+                                    {{ row.interlocutor.firstname ~ ' ' ~ row.interlocutor.surname ~ ' @' ~ row.interlocutor.login}}
+                                </a>
+                                {{ ' | ' ~ row.date|date('d-m-Y H:i:s') }}
+                            </p>
+                        </div>
+
+                        <div class="pull-right">
+                            <a href="{{ url('message_view', {'id': row.message_id}) }}" class="btn btn-info btn-sm">
+                                <span class="glyphicon glyphicon-eye-open"></span> {{ 'action.view'|trans }}
+                            </a>
+                        </div>
+                </li>
+            {% endfor %}
+        </ul>
+
+        {{ knp_pagination_render(messages) }}
+
+    {% else %}
+        <div class="panel-body">
+            <p class="text-center">{{ 'message.records_not_found'|trans }}</p>
+        </div>
+    {% endif %}
+{% endblock content %}

@@ -1,0 +1,212 @@
+<?php
+/**
+ * Day controller.
+ */
+namespace Controller;
+
+use Form\DayType;
+use Repository\DayRepository;
+use Repository\ExerciseRepository;
+use Repository\RoutineRepository;
+use Silex\Api\ControllerProviderInterface;
+use Silex\Application;
+use Symfony\Component\Form\Extension\Core\Type\FormType;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
+use Symfony\Component\HttpFoundation\Request;
+
+/**
+ * Class DayController
+ *
+ * @package Controller
+ */
+class DayController implements ControllerProviderInterface
+{
+    /**
+     * Routing settings.
+     *
+     * @param \Silex\Application $app Silex application
+     *
+     * @return mixed
+     */
+    public function connect(Application $app)
+    {
+        $controller = $app['controllers_factory'];
+        $controller->match('/add', [$this, 'addAction'])
+            ->method('POST|GET')
+            ->bind('day_add');
+        $controller->match('/{id}/edit', [$this, 'editAction'])
+            ->method('GET|POST')
+            ->assert('id', '[1-9]\d*')
+            ->bind('day_edit');
+        $controller->match('/{id}/delete', [$this, 'deleteAction'])
+            ->method('GET|POST')
+            ->assert('id', '[1-9]\d*')
+            ->bind('day_delete');
+
+        return $controller;
+    }
+
+    /**
+     * Add action.
+     *
+     * @param \Silex\Application                        $app     Silex application
+     * @param int                                       $slug    Workout routine id
+     * @param \Symfony\Component\HttpFoundation\Request $request HTTP request
+     *
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse HTTP response
+     */
+    public function addAction(Application $app, $slug, Request $request)
+    {
+        $day['workout_routine_id'] = $slug;
+        unset($slug);
+
+        $form = $app['form.factory']->createBuilder(
+            DayType::class,
+            $day,
+            ['exercise_repository' => new ExerciseRepository($app['db'])]
+        )->getForm();
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $dayRepository = new DayRepository($app['db']);
+            $dayRepository->save($form->getData());
+
+            $numberOfDays = $dayRepository->countDays($day['workout_routine_id']);
+            $routineRepository = new RoutineRepository($app['db']);
+            $routineRepository->insertNumberOfDays($day['workout_routine_id'], $numberOfDays);
+
+            $app['session']->getFlashBag()->add(
+                'messages',
+                [
+                    'type' => 'success',
+                    'message' => 'message.element_successfully_added',
+                ]
+            );
+
+            return $app->redirect($app['url_generator']->generate('day_add', ['slug' => $day['workout_routine_id']]), 301);
+        }
+
+        return $app['twig']->render(
+            'day/add.html.twig',
+            [
+                'routine_id' => $day['workout_routine_id'],
+                'form' => $form->createView(),
+            ]
+        );
+    }
+
+    /**
+     * Delete action.
+     *
+     * @param \Silex\Application                        $app     Silex application
+     * @param int                                       $slug    Workout routine id
+     * @param int                                       $id      Workout day id
+     * @param \Symfony\Component\HttpFoundation\Request $request HTTP request
+     *
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse HTTP response
+     */
+    public function deleteAction(Application $app, $slug, $id, Request $request)
+    {
+        $dayRepository = new DayRepository($app['db']);
+        $day = $dayRepository->findOneByIdAndRoutineId($id, $slug);
+
+        if (!$day) {
+            $app['session']->getFlashBag()->add(
+                'messages',
+                [
+                    'type' => 'warning',
+                    'message' => 'message.record_not_found',
+                ]
+            );
+
+            return $app->redirect($app['url_generator']->generate('routine_index'));
+        }
+
+        $form = $app['form.factory']->createBuilder(FormType::class, $day)->add('workout_day_id', HiddenType::class)->getForm();
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $dayRepository->delete($form->get('workout_day_id')->getData());
+
+            $numberOfDays = $dayRepository->countDays($day['workout_routine_id']);
+            $routineRepository = new RoutineRepository($app['db']);
+            $routineRepository->insertNumberOfDays($slug, $numberOfDays);
+
+            $app['session']->getFlashBag()->add(
+                'messages',
+                [
+                    'type' => 'success',
+                    'message' => 'message.element_successfully_deleted',
+                ]
+            );
+
+            return $app->redirect($app['url_generator']->generate('routine_view', ['id' => $slug]), 301);
+        }
+
+        return $app['twig']->render(
+            'day/delete.html.twig',
+            [
+                'day' => $day,
+                'form' => $form->createView(),
+            ]
+        );
+    }
+
+    /**
+     * Edit action.
+     *
+     * @param \Silex\Application                        $app     Silex application
+     * @param int                                       $slug    Workout routine id
+     * @param int                                       $id      Workout day id
+     * @param \Symfony\Component\HttpFoundation\Request $request HTTP request
+     *
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse HTTP response
+     */
+    public function editAction(Application $app, $slug, $id, Request $request)
+    {
+        $dayRepository = new DayRepository($app['db']);
+        $day = $dayRepository->findOneByIdAndRoutineId($id, $slug);
+
+        if (!$day) {
+            $app['session']->getFlashBag()->add(
+                'messages',
+                [
+                    'type' => 'warning',
+                    'message' => 'message.record_not_found',
+                ]
+            );
+
+            return $app->redirect($app['url_generator']->generate('routine_index'));
+        }
+
+        $form = $app['form.factory']->createBuilder(
+            DayType::class,
+            $day,
+            ['exercise_repository' => new ExerciseRepository($app['db'])]
+        )->getForm();
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $dayRepository->save($form->getData());
+
+            $app['session']->getFlashBag()->add(
+                'messages',
+                [
+                    'type' => 'success',
+                    'message' => 'message.element_successfully_added',
+                ]
+            );
+
+            return $app->redirect($app['url_generator']->generate('routine_edit', ['id' => $slug]), 301);
+        }
+
+        return $app['twig']->render(
+            'day/edit.html.twig',
+            [
+                'day' => $day,
+                'form' => $form->createView(),
+            ]
+        );
+    }
+}
+

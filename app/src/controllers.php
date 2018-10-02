@@ -1,0 +1,59 @@
+<?php
+/**
+ * Routing and controllers.
+ */
+use Controller\AdminController;
+use Controller\AuthController;
+use Controller\CommentController;
+use Controller\DayController;
+use Controller\ExerciseController;
+use Controller\InvitationController;
+use Controller\MessageController;
+use Controller\RoutineController;
+use Controller\UserController;
+use Controller\WorkoutController;
+use Repository\WorkoutRepository;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+
+//Request::setTrustedProxies(array('127.0.0.1'));
+
+$app->get('/', function () use ($app) {
+    $workoutRepository = new WorkoutRepository($app['db']);
+
+    return $app['twig']->render(
+        'index.html.twig',
+        [
+            'notification' => $workoutRepository->findIfToday($app['security.token_storage']->getToken()->getUser()->getId()),
+        ]
+    );
+})
+->bind('homepage')
+;
+
+$app->mount('/admin', new AdminController());
+$app->mount('/auth', new AuthController());
+$app->mount('/exercise', new ExerciseController());
+$app->mount('/message', new MessageController());
+$app->mount('/routine', new RoutineController());
+$app->mount('/routine/{slug}/day', new DayController());
+$app->mount('/user', new UserController());
+$app->mount('/workout', new WorkoutController());
+$app->mount('/workout/invitation', new InvitationController());
+$app->mount('/workout/{slug}/comment', new CommentController());
+
+$app->error(function (\Exception $e, Request $request, $code) use ($app) {
+    if ($app['debug']) {
+        return;
+    }
+
+    // 404.html, or 40x.html, or 4xx.html, or error.html
+    $templates = array(
+        'errors/'.$code.'.html.twig',
+        'errors/'.substr($code, 0, 2).'x.html.twig',
+        'errors/'.substr($code, 0, 1).'xx.html.twig',
+        'errors/default.html.twig',
+    );
+
+    return new Response($app['twig']->resolveTemplate($templates)->render(array('code' => $code)), $code);
+});

@@ -1,0 +1,52 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ ' | ' ~ 'title.workouts'|trans }}{% endblock %}
+
+{% block active_workout 'navigation__link--active' %}
+
+{% block content %}
+    <header class="subpage-header clearfix">
+        <h2 class="subpage-header__title pull-left">{{ 'title.workouts'|trans }}</h2>
+        <a href="{{ url('workout_add') }}" class="btn btn-success btn pull-right">
+            <span class="glyphicon glyphicon-plus"></span> {{ 'action.save'|trans }}
+        </a>
+    </header>
+
+    <hr class="hr--dark">
+
+    {% if workouts|length %}
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>{{ 'header.workout_date'|trans }}</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for workout in workouts %}
+                    <tr>
+                        <td>{{ loop.index }}</td>
+                        <td>{{ workout.due_date }}</td>
+                        <td>
+                            <a href="{{ url('workout_view', {'id': workout.workout_id}) }}" class="btn btn-info btn-sm">
+                                <span class="glyphicon glyphicon-eye-open"></span> {{ 'action.view'|trans }}
+                            </a>
+                            <a href="{{ url('workout_edit', {'id': workout.workout_id}) }}" class="btn btn-warning btn-sm">
+                                <span class="glyphicon glyphicon-pencil"></span> {{ 'action.edit'|trans }}
+                            </a>
+                            <a href="{{ url('workout_delete', {'id': workout.workout_id}) }}" class="btn btn-danger btn-sm">
+                                <span class="glyphicon glyphicon-trash"></span> {{ 'action.delete'|trans }}
+                            </a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        {{ knp_pagination_render(workouts) }}
+
+    {% else %}
+        <p class="text-center">{{ 'message.records_not_found'|trans }}</p>
+    {% endif %}
+{% endblock content %}

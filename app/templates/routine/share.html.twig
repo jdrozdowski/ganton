@@ -1,0 +1,29 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ ' | ' ~ 'title.routine_share'|trans}}{% endblock %}
+
+{%  block active_message 'navigation__link--active' %}
+
+{% block content %}
+    {% form_theme form with ['bootstrap_3_horizontal_layout.html.twig', 'form/form_errors.html.twig'] %}
+
+    <header class="subpage-header">
+        <h2 class="subpage-header__title subpage-header__title--small">{{ 'title.routines'|trans}}</h2>
+        <h3 class="subpage-header__title">{{ 'title.routine_share'|trans}}</h3>
+    </header>
+
+    <hr class="hr--dark">
+
+    <div class="row">
+        <div class="col-md-8 col-md-offset-1">
+            {{ form_start(form, { method: 'post', action: url('routine_share', {'id': routine.workout_routine_id}) }) }}
+                {{ form_widget(form) }}
+                <input type="submit" value="{{ 'action.share'|trans }}" class="btn btn-primary">
+            {{ form_end(form) }}
+
+            <a href="{{ url('routine_view', {'id' : routine.workout_routine_id}) }}" class="btn btn-danger pull-right">
+                <span class="glyphicon glyphicon-remove"></span> {{ 'label.cancel'|trans}}
+            </a>
+        </div>
+    </div>
+{% endblock content %}

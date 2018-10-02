@@ -1,0 +1,209 @@
+<?php
+/**
+ * Comment controller.
+ */
+namespace Controller;
+
+use Repository\CommentRepository;
+use Silex\Api\ControllerProviderInterface;
+use Silex\Application;
+use Symfony\Component\Form\Extension\Core\Type\FormType;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
+use Symfony\Component\HttpFoundation\Request;
+
+/**
+ * Class CommentController
+ *
+ * @package Controller
+ */
+class CommentController implements ControllerProviderInterface
+{
+    /**
+     * Routing settings.
+     *
+     * @param \Silex\Application $app Silex application
+     *
+     * @return mixed
+     */
+    public function connect(Application $app)
+    {
+        $controller = $app['controllers_factory'];
+        $controller->match('/add', [$this, 'addAction'])
+            ->method('POST|GET')
+            ->bind('comment_add');
+        $controller->match('/{id}/delete', [$this, 'deleteAction'])
+            ->method('POST|GET')
+            ->assert('id', '[1-9]\d*')
+            ->bind('comment_delete');
+        $controller->match('/{id}/edit', [$this, 'editAction'])
+            ->method('POST|GET')
+            ->assert('id', '[1-9]\d*')
+            ->bind('comment_edit');
+
+        return $controller;
+    }
+
+    /**
+     * Add action.
+     *
+     * @param \Silex\Application                        $app     Silex application
+     * @param int                                       $slug    Workout id
+     * @param \Symfony\Component\HttpFoundation\Request $request HTTP request
+     *
+     * @return mixed
+     */
+    public function addAction(Application $app, $slug, Request $request)
+    {
+        $form = $app['form.factory']->createBuilder()->add(
+            'content',
+            TextareaType::class,
+            [
+                'label' => 'label.content',
+            ]
+        )->getForm();
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $comment = $form->getData();
+            $comment['workout_id'] = $slug;
+            $comment['user_id'] = $app['security.token_storage']->getToken()->getUser()->getId();
+            $commentRepository = new CommentRepository($app['db']);
+            $commentRepository->save($comment);
+
+            $app['session']->getFlashBag()->add(
+                'messages',
+                [
+                    'type' => 'success',
+                    'message' => 'message.element_successfully_added',
+                ]
+            );
+
+            return $app->redirect($app['url_generator']->generate('workout_view', ['id' => $slug]), 301);
+        }
+
+        return $app['twig']->render(
+            'comment/add.html.twig',
+            [
+                'workout_id' => $slug,
+                'form' => $form->createView(),
+            ]
+        );
+    }
+
+    /**
+     * Edit action.
+     *
+     * @param \Silex\Application                        $app     Silex application
+     * @param int                                       $slug    Workout Id
+     * @param int                                       $id      Element Id
+     * @param \Symfony\Component\HttpFoundation\Request $request HTTP request
+     *
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse HTTP response
+     */
+    public function editAction(Application $app, $slug, $id, Request $request)
+    {
+        $commentRepository = new CommentRepository($app['db']);
+        $comment = $commentRepository->findOneById($id);
+
+        if (!$comment) {
+            $app['session']->getFlashBag()->add(
+                'massages',
+                [
+                    'type' => 'warning',
+                    'message' => 'message.record_not_found',
+                ]
+            );
+
+            return $app->redirect($app['url_generator']->generate('workout_index'));
+        }
+
+        $form = $app['form.factory']->createBuilder(FormType::class, $comment)->add(
+            'content',
+            TextareaType::class
+        )->getForm();
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $commentRepository->save($form->getData());
+
+            $app['session']->getFlashBag()->add(
+                'messages',
+                [
+                    'type' => 'success',
+                    'message' => 'message.element_successfully_edited',
+                ]
+            );
+
+            return $app->redirect($app['url_generator']->generate('workout_view', ['id' => $slug]), 301);
+        }
+
+        return $app['twig']->render(
+            'comment/edit.html.twig',
+            [
+                'comment' => $comment,
+                'form' => $form->createView(),
+            ]
+        );
+    }
+
+    /**
+     * Delete action.
+     *
+     * @param \Silex\Application                        $app     Silex application
+     * @param int                                       $slug    Workout Id
+     * @param int                                       $id      Element Id
+     * @param \Symfony\Component\HttpFoundation\Request $request HTTP request
+     *
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse HTTP response
+     */
+    public function deleteAction(Application $app, $slug, $id, Request $request)
+    {
+        $commentRepository = new CommentRepository($app['db']);
+        $comment = $commentRepository->findOneById($id);
+
+        if (!$comment) {
+            $app['session']->getFlashBag()->add(
+                'massages',
+                [
+                    'type' => 'warning',
+                    'message' => 'message.record_not_found',
+                ]
+            );
+
+            return $app->redirect($app['url_generator']->generate('workout_index'));
+        }
+
+        $form = $app['form.factory']->createBuilder(FormType::class, $comment)->add(
+            'comment_id',
+            HiddenType::class
+        )->getForm();
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $commentRepository->delete($form->get('comment_id')->getData());
+
+            $app['session']->getFlashBag()->add(
+                'messages',
+                [
+                    'type' => 'success',
+                    'message' => 'message.element_successfully_deleted',
+                ]
+            );
+
+            return $app->redirect($app['url_generator']->generate('workout_view', ['id' => $slug]));
+        }
+
+        return $app['twig']->render(
+            'comment/delete.html.twig',
+            [
+                'comment' => $comment,
+                'form' => $form->createView(),
+            ]
+        );
+    }
+}
+

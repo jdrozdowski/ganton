@@ -1,0 +1,30 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ ' | ' ~ 'title.message'|trans}}{% endblock %}
+
+{% block active_message 'navigation__link--active' %}
+
+{% block content %}
+    <header class="subpage-header clearfix">
+        <h2 class="subpage-header__title subpage-header__title--small">{{ 'title.messages'|trans}}</h2>
+        {% if message|length %}
+            <div class="pull-left">
+                <h3 class="subpage-header__title">{{ message.subject }}</h3>
+                <a href="{{ url('user_view', {'id': message.message_id}) }}">
+                    {{ message.sender.firstname ~ ' ' ~ message.sender.surname }}
+                    <small>{{ ' @' ~ message.sender.login}}</small>
+                </a>
+                {{ ' | ' ~ message.date|date('d-m-Y H:i:s') }}
+            </div>
+        {% endif %}
+    </header>
+
+    <hr class="hr--dark">
+
+    {% if message|length %}
+        <p>{{ message.content }}</p>
+    {% endif %}
+    <a href="{{ url('message_index') }}" class="btn btn-default back-button">
+        <i class="fa fa-long-arrow-left"></i> {{ 'label.back_to_list'|trans}}
+    </a>
+{% endblock content %}

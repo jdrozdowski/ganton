@@ -1,0 +1,84 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ ' | ' ~ 'title.society'|trans }}{% endblock %}
+
+{% block active_society 'navigation__link--active' %}
+
+{% block content %}
+    {% form_theme form with ['bootstrap_3_horizontal_layout.html.twig', 'form/form_errors.html.twig'] %}
+
+    <header class="subpage-header">
+        <h2 class="subpage-header__title">{{ 'title.society'|trans }}</h2>
+
+        <nav class="navigation navigation--tabs">
+            <ul class="nav nav-tabs">
+                <li role="presentation" class="{{ role == 'all' ? 'active'}}">
+                    <a href="{{ url('user_search', {'role': 'all'}) }}">{{ 'title.all_users'|trans }}</a>
+                </li>
+                <li role="presentation" class="{{ role == 'athlete' ? 'active'}}">
+                    <a href="{{ url('user_search', {'role': 'athlete'}) }}">{{ 'title.athletes'|trans }}</a>
+                </li>
+                <li role="presentation" class="{{ role == 'coach' ? 'active'}}">
+                    <a href="{{ url('user_search', {'role': 'coach'}) }}">{{ 'title.coaches'|trans }}</a>
+                </li>
+            </ul>
+        </nav>
+    </header>
+
+    <div class="row">
+        <div class="col-md-5 col-md-offset-3">
+            {{ form_start(form, { method: 'post', action: url('user_search', {'role': role}) }) }}
+                {{ form_widget(form) }}
+            {{ form_end(form) }}
+        </div>
+    </div>
+
+    {% if users|length %}
+        <div class="panel panel-default">
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th>{{ 'label.user'|trans }}</th>
+                    <th></th>
+                    <th></th>
+                    <th>{{ 'label.location'|trans }}</th>
+                    <th>{{ 'label.birthdate'|trans }}</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for row in users %}
+                    <tr>
+                        <td class="td--bold text-capitalize">
+                            <p class="text-capitalize">{{ row.firstname ~ ' ' ~ row.surname }}</p>
+                        </td>
+                        <td>
+                            {{ '@' ~ row.login}}
+                        </td>
+                        <td class="text-success text-uppercase">
+                            {{ (row.name)|trans }}
+                        </td>
+                        <td class="text-capitalize">
+                            {{ row.location }}
+                        </td>
+                        <td>
+                            {{ row.birthdate|date('d-m-Y') }}
+                        </td>
+                        <td>
+                            <a href="{{ url('user_view', {'id': row.user_id}) }}" class="btn btn-info btn-sm">
+                                <span class="glyphicon glyphicon-eye-open"></span> {{ 'action.view'|trans }}
+                            </a>
+                            <a href="{{ url('message_add', {'username': row.login}) }}" class="btn btn-primary btn-sm">
+                                <span class="glyphicon glyphicon-comment"></span> {{ 'action.send'|trans }}
+                            </a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        </div>
+        {{ knp_pagination_render(users) }}
+    {% else %}
+        <p class="text-center">{{ 'message.records_not_found'|trans }}</p>
+    {% endif %}
+{% endblock content %}

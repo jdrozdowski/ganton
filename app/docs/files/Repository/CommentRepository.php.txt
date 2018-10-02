@@ -1,0 +1,116 @@
+<?php
+/**
+ * Comment repository.
+ */
+namespace Repository;
+
+use Doctrine\DBAL\Connection;
+
+/**
+ * Class CommentRepository
+ *
+ * @package Repository
+ */
+class CommentRepository
+{
+    /**
+     * Doctrine DBAL Connection.
+     *
+     * @var \Doctrine\DBAL\Connection $db
+     */
+    protected $db;
+
+    /**
+     * User repository.
+     *
+     * @var null|\Repository\UserRepository $userRepository
+     */
+    protected $userRepository = null;
+
+    /**
+     * CommentRepository constructor.
+     *
+     * @param \Doctrine\DBAL\Connection $db
+     */
+    public function __construct(Connection $db)
+    {
+        $this->db = $db;
+        $this->userRepository = new UserRepository($db);
+    }
+
+    /**
+     * Fetch one record by workout id.
+     *
+     * @param int $workoutId Workout Id
+     *
+     * @return array Result
+     */
+    public function findOneByWorkoutId($workoutId)
+    {
+        $queryBuilder = $this->db->createQueryBuilder();
+
+        $queryBuilder->select('wc.comment_id', 'wc.user_id', 'wc.content')
+            ->from('workout_comments', 'wc')
+            ->where('wc.workout_id = :workout_id')
+            ->setParameter(':workout_id', $workoutId, \PDO::PARAM_INT);
+
+        $result = $queryBuilder->execute()->fetchAll();
+
+        foreach ($result as &$comment) {
+            $comment['author_data'] = $this->userRepository->findNameAndSurnameAndUsernameById($comment['user_id']);
+        }
+        unset($comment);
+
+        return $result ? $result : [];
+    }
+
+    /**
+     * Fetch one record by id.
+     *
+     * @param int $id Element Id
+     *
+     * @return array|mixed Result
+     */
+    public function findOneById($id)
+    {
+        $queryBuilder = $this->db->createQueryBuilder();
+
+        $queryBuilder->select('wc.comment_id', 'wc.workout_id', 'wc.user_id', 'wc.content')
+            ->from('workout_comments', 'wc')
+            ->where('wc.comment_id = :comment_id')
+            ->setParameter(':comment_id', $id, \PDO::PARAM_INT);
+
+        $result = $queryBuilder->execute()->fetch();
+
+        return $result ? $result : [];
+    }
+
+    /**
+     * Save record.
+     *
+     * @param array $comment Comment
+     */
+    public function save($comment)
+    {
+        if (isset($comment['comment_id']) && ctype_digit((string) $comment['comment_id'])) {
+            $commentId = $comment['comment_id'];
+            $commentContent = $comment['content'];
+            unset($comment);
+
+            $this->db->update('workout_comments', ['content' => $commentContent], ['comment_id' => $commentId]);
+        } else {
+            $this->db->insert('workout_comments', $comment);
+        }
+    }
+
+    /**
+     * Delete record.
+     *
+     * @param int $id Element id
+     */
+    public function delete($id)
+    {
+        $this->db->delete('workout_comments', ['comment_id' => $id]);
+    }
+}
+

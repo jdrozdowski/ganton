@@ -1,0 +1,22 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ ' | ' ~ 'title.invitation_accept'|trans }}{% endblock %}
+
+{% block content %}
+    <header class="subpage-header">
+        <h2 class="subpage-header__title subpage-header__title--small">{{ 'title.workouts'|trans}}</h2>
+        <h3 class="subpage-header__title">{{ 'title.invitation_accept'|trans }}</h3>
+    </header>
+
+    <hr class="hr--dark">
+
+    <p class="text-warning">Czy napewno chcesz przyjąć zaproszenie?</p>
+    {{ form_start(form, { method: 'post', action: url('invitation_accept', {'id': invitation_id}) }) }}
+    {{ form_widget(form) }}
+        <input type="submit" value="{{ 'action.accept'|trans }}" class="btn btn-success">
+    {{ form_end(form) }}
+
+    <a href="{{ url('invitation_index') }}" class="btn btn-danger pull-right">
+        <span class="glyphicon glyphicon-remove"></span> {{ 'label.cancel'|trans}}
+    </a>
+{% endblock %}

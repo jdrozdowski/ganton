@@ -1,0 +1,35 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ ' | ' ~ 'title.workout_edit'|trans }}{% endblock %}
+
+{% block active_workout 'navigation__link--active' %}
+
+{% block content %}
+    {% form_theme form with ['bootstrap_3_horizontal_layout.html.twig', 'form/form_errors.html.twig'] %}
+
+    <header class="subpage-header">
+        <h2 class="subpage-header__title subpage-header__title--small">{{ 'title.workouts'|trans }}</h2>
+        <h3 class="subpage-header__title">{{ 'title.workout_edit'|trans }}</h3>
+    </header>
+
+    <hr class="hr--dark">
+
+    {{ form_start(form, { method: 'post', action: url('workout_edit', {'id': workout.workout_id}) }) }}
+        {{ form_row(form.due_date) }}
+        <fieldset>
+            <legend>{{ 'label.exercises'|trans }}</legend>
+            <ul class="exercises" data-prototype="{{ form_widget(form.exercises.vars.prototype)|e('html_attr') }}">
+            {% for exercise in form.exercises %}
+                <li>
+                    {{ form_widget(exercise) }}
+                    <a href="#" class="remove-tag btn btn-sm btn-danger"><span class="glyphicon glyphicon-trash"></span></a>
+                </li>
+            {% endfor %}
+            </ul>
+        </fieldset>
+    {{ form_end(form) }}
+
+    <a href="{{ url('workout_index') }}" class="btn btn-default back-button">
+        <i class="fa fa-long-arrow-left"></i> {{ 'label.back_to_list'|trans}}
+    </a>
+{% endblock content %}

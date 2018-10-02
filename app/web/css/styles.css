@@ -1,0 +1,184 @@
+body {
+    font-family: Montserrat, Arial, sans-serif;
+    background-color: #F8F9FA;
+}
+
+a {
+    color: inherit;
+}
+
+a:hover,
+a:focus {
+    color: #FE9E60;
+    text-decoration: none;
+}
+
+.hr--dark {
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.td--bold {
+    font-weight: 700;
+}
+
+.vertical-center {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.main-site-main {
+    width: 100%;
+    margin-top: 30px;
+}
+
+.log-in {
+    margin-bottom: 30px;
+}
+
+.log-in-form {
+    max-width: 300px;
+    margin: 0 auto 10px;
+}
+
+.sign-up-question, .form-sign-up {
+    display: inline-block;
+}
+
+.main-container {
+    display: flex;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+.header {
+    width: 280px;
+    height: 100vh;
+    position: fixed;
+    padding: 50px 40px 0;
+    background-color: #191F28;
+}
+
+.header__title {
+    margin: 0  auto 40px;
+}
+
+.navigation__list {
+    padding-left: 0;
+    list-style: none;
+}
+
+.list__element {
+    margin-bottom: 40px;
+}
+
+.list__element:last-child {
+    margin-bottom: 0;
+}
+
+.list__element--account {
+    margin-bottom: 0;
+}
+
+.list__element--messages {
+    margin: 30px 0 40px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #434857;
+}
+
+.navigation__link {
+    display: block;
+    font-size: 16px;
+    color: #555666;
+}
+
+.navigation__link:hover,
+.navigation__link:focus,
+.navigation__link--active {
+    color: #FE9E60;
+    text-decoration: none;
+}
+
+.navigation__link--account {
+    color: #F2F3F3;
+    font-size: 18px;
+}
+
+.fa.navigation__icon {
+    display: block;
+    margin: 0 auto 10px;
+}
+
+.fa.navigation__icon--message {
+    display: inline-block;
+    margin-right: 8px;
+}
+
+.main-content {
+    width: 100%;
+    margin: 0 50px 0 330px;
+}
+
+/* *** */
+
+.subpage-header {
+    padding-top: 50px;
+}
+
+.subpage-header__title {
+    font-size: 32px;
+    margin-top: 0;
+}
+
+.subpage-header__title--small {
+    font-size: 14px;
+    color: #aeaeae;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+}
+
+.info-table {
+    margin: 0;
+    max-width: 300px;
+}
+
+.table__row--name {
+    width: 30%;
+}
+
+.back-button {
+    margin-top: 40px;
+}
+
+.navigation--tabs {
+    margin: 20px 0;
+}
+
+.panel-title {
+    font-size: 24px;
+}
+
+.panel-table__cell {
+    width: 50%;
+    padding: 5px 15px!important;
+}
+
+.cell--large {
+    font-size: 20px;
+    margin: 0;
+}
+
+.fa-star--record {
+    color: #FFA500;
+}
+
+.exercises {
+    list-style: none;
+}
+
+/*.form-group label.control-label.required:after {
+    content: " *";
+    color: #a94442;;
+}*/

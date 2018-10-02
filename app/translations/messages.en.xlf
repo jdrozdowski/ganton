@@ -1,0 +1,511 @@
+<?xml version="1.0"?>
+<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
+    <file source-language="en" target-language="en" datatype="plaintext" original="file.ext">
+        <body>
+            <trans-unit id="action.accept">
+                <source>action.accept</source>
+                <target>Accept</target>
+            </trans-unit>
+            <trans-unit id="action.assign">
+                <source>action.assign</source>
+                <target>Assign</target>
+            </trans-unit>
+            <trans-unit id="action.confirm">
+                <source>action.confirm</source>
+                <target>Confirm</target>
+            </trans-unit>
+            <trans-unit id="action.change_password">
+                <source>action.change_password</source>
+                <target>Change password</target>
+            </trans-unit>
+            <trans-unit id="action.cooperate">
+                <source>action.cooperate</source>
+                <target>Cooperate</target>
+            </trans-unit>
+            <trans-unit id="action.delete">
+                <source>action.delete</source>
+                <target>Delete</target>
+            </trans-unit>
+            <trans-unit id="action.edit">
+                <source>action.edit</source>
+                <target>Edit</target>
+            </trans-unit>
+            <trans-unit id="action.invite">
+                <source>action.invite</source>
+                <target>Invite</target>
+            </trans-unit>
+            <trans-unit id="action.login">
+                <source>action.login</source>
+                <target>Log in</target>
+            </trans-unit>
+            <trans-unit id="action.register">
+                <source>action.register</source>
+                <target>Register</target>
+            </trans-unit>
+            <trans-unit id="action.save">
+                <source>action.save</source>
+                <target>Add</target>
+            </trans-unit>
+            <trans-unit id="action.send">
+                <source>action.send</source>
+                <target>Send message</target>
+            </trans-unit>
+            <trans-unit id="action.send_invitation">
+                <source>action.send_invitation</source>
+                <target>Send invitation</target>
+            </trans-unit>
+            <trans-unit id="action.share">
+                <source>action.share</source>
+                <target>Share</target>
+            </trans-unit>
+            <trans-unit id="auth.logout.label">
+                <source>auth.logout.label</source>
+                <target>Logout</target>
+            </trans-unit>
+            <trans-unit id="header.commments">
+                <source>header.comments</source>
+                <target>Comments</target>
+            </trans-unit>
+            <trans-unit id="header.summary">
+                <source>header.summary</source>
+                <target>Workout summary</target>
+            </trans-unit>
+            <trans-unit id="action.view">
+                <source>action.view</source>
+                <target>View</target>
+            </trans-unit>
+            <trans-unit id="header.workout_date">
+                <source>header.workout_date</source>
+                <target>Due date</target>
+            </trans-unit>
+            <trans-unit id="Items per page">
+                <source>Items per page</source>
+                <target>Items per page</target>
+            </trans-unit>
+            <trans-unit id="label.begin">
+                <source>label.begin</source>
+                <target>Begin</target>
+            </trans-unit>
+            <trans-unit id="label.end">
+                <source>label.end</source>
+                <target>End</target>
+            </trans-unit>
+            <trans-unit id="label.monday">
+                <source>label.monday</source>
+                <target>Monday</target>
+            </trans-unit>
+            <trans-unit id="label.tuesday">
+                <source>label.tuesday</source>
+                <target>Tuesday</target>
+            </trans-unit>
+            <trans-unit id="label.wednesday">
+                <source>label.wednesday</source>
+                <target>Wednesday</target>
+            </trans-unit>
+            <trans-unit id="label.thursday">
+                <source>label.thursday</source>
+                <target>Thursday</target>
+            </trans-unit>
+            <trans-unit id="label.friday">
+                <source>label.friday</source>
+                <target>Friday</target>
+            </trans-unit>
+            <trans-unit id="label.saturday">
+                <source>label.saturday</source>
+                <target>Saturday</target>
+            </trans-unit>
+            <trans-unit id="label.sunday">
+                <source>label.sunday</source>
+                <target>Sunday</target>
+            </trans-unit>
+            <trans-unit id="label.add">
+                <source>label.add</source>
+                <target>Add</target>
+            </trans-unit>
+            <trans-unit id="label.author">
+                <source>label.author</source>
+                <target>author</target>
+            </trans-unit>
+            <trans-unit id="label.back_to_list">
+                <source>label.back_to_list</source>
+                <target>Back</target>
+            </trans-unit>
+            <trans-unit id="label.birthdate">
+                <source>label.birthdate</source>
+                <target>Date of birth</target>
+            </trans-unit>
+            <trans-unit id="label.cancel">
+                <source>label.cancel</source>
+                <target>Cancel</target>
+            </trans-unit>
+            <trans-unit id="label.content">
+                <source>label.content</source>
+                <target>Message</target>
+            </trans-unit>
+            <trans-unit id="label.due_date">
+                <source>label.due_date</source>
+                <target>Due date</target>
+            </trans-unit>
+            <trans-unit id="label.exercise">
+                <source>label.exercise</source>
+                <target>Exercise</target>
+            </trans-unit>
+            <trans-unit id="label.exercise_name">
+                <source>label.exercise_name</source>
+                <target>Exercise name</target>
+            </trans-unit>
+            <trans-unit id="label.exercises">
+                <source>label.exercises</source>
+                <target>Exercises</target>
+            </trans-unit>
+            <trans-unit id="label.finish">
+                <source>label.finish</source>
+                <target>Finish</target>
+            </trans-unit>
+            <trans-unit id="label.firstname">
+                <source>label.firstname</source>
+                <target>First name</target>
+            </trans-unit>
+            <trans-unit id="label.is_public">
+                <source>label.is_public</source>
+                <target>Availability</target>
+            </trans-unit>
+            <trans-unit id="label.location">
+                <source>label.location</source>
+                <target>Location</target>
+            </trans-unit>
+            <trans-unit id="label.login">
+                <source>label.login</source>
+                <target>Login</target>
+            </trans-unit>
+            <trans-unit id="label.name">
+                <source>label.name</source>
+                <target>Name</target>
+            </trans-unit>
+            <trans-unit id="label.number_of_days">
+                <source>label.number_of_days</source>
+                <target>days per week</target>
+            </trans-unit>
+            <trans-unit id="label.password">
+                <source>label.password</source>
+                <target>Password</target>
+            </trans-unit>
+            <trans-unit id="label.private">
+                <source>label.private</source>
+                <target>private</target>
+            </trans-unit>
+            <trans-unit id="label.public">
+                <source>label.public</source>
+                <target>public</target>
+            </trans-unit>
+            <trans-unit id="label.receiver">
+                <source>label.receiver</source>
+                <target>Receiver</target>
+            </trans-unit>
+            <trans-unit id="label.record">
+                <source>label.record</source>
+                <target>Record [kg]</target>
+            </trans-unit>
+            <trans-unit id="label.repeat_password">
+                <source>label.repeat_password</source>
+                <target>Repeat password</target>
+            </trans-unit>
+            <trans-unit id="label.reps">
+                <source>label.reps</source>
+                <target>Number of reps</target>
+            </trans-unit>
+            <trans-unit id="label.reps_short">
+                <source>label.reps_short</source>
+                <target>reps</target>
+            </trans-unit>
+            <trans-unit id="label.search">
+                <source>label.search</source>
+                <target>Search</target>
+            </trans-unit>
+            <trans-unit id="label.sets">
+                <source>label.sets</source>
+                <target>Number of sets</target>
+            </trans-unit>
+            <trans-unit id="label.sets_short">
+                <source>label.sets_short</source>
+                <target>sets</target>
+            </trans-unit>
+            <trans-unit id="label.subject">
+                <source>label.receiver</source>
+                <target>Title</target>
+            </trans-unit>
+            <trans-unit id="label.surname">
+                <source>label.surname</source>
+                <target>Surname</target>
+            </trans-unit>
+            <trans-unit id="label.user">
+                <source>label.user</source>
+                <target>User</target>
+            </trans-unit>
+            <trans-unit id="label.user_weight">
+                <source>label.user_weight</source>
+                <target>Weight</target>
+            </trans-unit>
+            <trans-unit id="label.weekday">
+                <source>label.weekday</source>
+                <target>Preferred day</target>
+            </trans-unit>
+            <trans-unit id="label.weight">
+                <source>label.weight</source>
+                <target>Weight [kg]</target>
+            </trans-unit>
+            <trans-unit id="message.account_removed">
+                <source>message.account_removed</source>
+                <target>Account removed</target>
+            </trans-unit>
+            <trans-unit id="message.element_successfully_added">
+                <source>message.element_successfully_added</source>
+                <target>Element successfully added.</target>
+            </trans-unit>
+            <trans-unit id="message.element_successfully_deleted">
+                <source>message.element_successfully_deleted</source>
+                <target>Element został pomyślnie usunięty.</target>
+            </trans-unit>
+            <trans-unit id="message.element_successfully_edited">
+                <source>message.element_successfully_edited</source>
+                <target>Element successfully edited.</target>
+            </trans-unit>
+            <trans-unit id="message.element_successfully_send">
+                <source>message.element_successfully_send</source>
+                <target>Element successfully sent.</target>
+            </trans-unit>
+            <trans-unit id="message.element_successfully_shared">
+                <source>message.element_successfully_shared</source>
+                <target>Element successfully shared.</target>
+            </trans-unit>
+            <trans-unit id="message.have_account">
+                <source>message.have_account</source>
+                <target>Have you got an account?</target>
+            </trans-unit>
+            <trans-unit id="message.not_have_account">
+                <source>message.not_have_account</source>
+                <target>Have you not an account?</target>
+            </trans-unit>
+            <trans-unit id="message.record_not_your">
+                <source>message.record_not_your</source>
+                <target>Record not your!</target>
+            </trans-unit>
+            <trans-unit id="message.record_not_found">
+                <source>message.record_not_found</source>
+                <target>Record not found.</target>
+            </trans-unit>
+            <trans-unit id="message.records_not_found">
+                <source>message.records_not_found</source>
+                <target>Records not found.</target>
+            </trans-unit>
+            <trans-unit id="message.welcome_admin">
+                <source>message.welcome_admin</source>
+                <target>Hello admin,</target>
+            </trans-unit>
+            <trans-unit id="message.go_to_admin_panel">
+                <source>message.go_to_admin_panel</source>
+                <target>go to admin panel.</target>
+            </trans-unit>
+            <trans-unit id="message.welcome">
+                <source>message.welcome</source>
+                <target>Welcome,</target>
+            </trans-unit>
+            <trans-unit id="notification.no_workout">
+                <source>notification.no_workout</source>
+                <target>No workout found!</target>
+            </trans-unit>
+            <trans-unit id="notification.workout">
+                <source>notification.workout</source>
+                <target>You have workout today!</target>
+            </trans-unit>
+            <trans-unit id="placeholder.message_content">
+                <source>placeholder.message_content</source>
+                <target>Write a message ...</target>
+            </trans-unit>
+            <trans-unit id="placeholder.message_username">
+                <source>placeholder.message_username</source>
+                <target>Enter a username ...</target>
+            </trans-unit>
+            <trans-unit id="role.athlete">
+                <source>role.athlete</source>
+                <target>athlete</target>
+            </trans-unit>
+            <trans-unit id="ROLE_ATHLETE">
+                <source>ROLE_ATHLETE</source>
+                <target>Athlete</target>
+            </trans-unit>
+            <trans-unit id="ROLE_ADMIN">
+                <source>ROLE_ADMIN</source>
+                <target>Admin</target>
+            </trans-unit>
+            <trans-unit id="role.coach">
+                <source>role.coach</source>
+                <target>coach</target>
+            </trans-unit>
+            <trans-unit id="title.all">
+                <source>title.all</source>
+                <target>All</target>
+            </trans-unit>
+            <trans-unit id="title.all_users">
+                <source>title.all_users</source>
+                <target>All</target>
+            </trans-unit>
+            <trans-unit id="title.athletes">
+                <source>title.athletes</source>
+                <target>Athletes</target>
+            </trans-unit>
+            <trans-unit id="title.available">
+                <source>title.available</source>
+                <target>Available</target>
+            </trans-unit>
+            <trans-unit id="title.auth_login">
+                <source>title.auth_login</source>
+                <target>Log in</target>
+            </trans-unit>
+            <trans-unit id="title.change_password">
+                <source>title.change_password</source>
+                <target>Change password</target>
+            </trans-unit>
+            <trans-unit id="title.coach">
+                <source>title.coach</source>
+                <target>Coach</target>
+            </trans-unit>
+            <trans-unit id="title.coaches">
+                <source>title.coaches</source>
+                <target>Coaches</target>
+            </trans-unit>
+            <trans-unit id="title.comment_add">
+                <source>title.comment_add</source>
+                <target>Add comment</target>
+            </trans-unit>
+            <trans-unit id="title.comment_delete">
+                <source>title.comment_delete</source>
+                <target>Delete comment</target>
+            </trans-unit>
+            <trans-unit id="title.comment_edit">
+                <source>title.comment_edit</source>
+                <target>Edit comment</target>
+            </trans-unit>
+            <trans-unit id="title.day_add">
+                <source>title.day_add</source>
+                <target>Add a workout day</target>
+            </trans-unit>
+            <trans-unit id="title.days">
+                <source>title.days</source>
+                <target>Workout days</target>
+            </trans-unit>
+            <trans-unit id="title.exercises">
+                <source>title.exercises</source>
+                <target>Exercises</target>
+            </trans-unit>
+            <trans-unit id="title.homepage">
+                <source>title.homepage</source>
+                <target>Homepage</target>
+            </trans-unit>
+            <trans-unit id="title.invitation_accept">
+                <source>title.invitation_accept</source>
+                <target>Accept invitation</target>
+            </trans-unit>
+            <trans-unit id="title.invitation_delete">
+                <source>title.invitation_delete</source>
+                <target>Delete invitation</target>
+            </trans-unit>
+            <trans-unit id="title.invitations">
+                <source>title.invitations</source>
+                <target>Invitations</target>
+            </trans-unit>
+            <trans-unit id="title.message">
+                <source>title.message</source>
+                <target>Message</target>
+            </trans-unit>
+            <trans-unit id="title.messages">
+                <source>title.messages</source>
+                <target>Messages</target>
+            </trans-unit>
+            <trans-unit id="title.message_add">
+                <source>title.message_add</source>
+                <target>Write a message</target>
+            </trans-unit>
+            <trans-unit id="title.mine">
+                <source>title.mine</source>
+                <target>Mine</target>
+            </trans-unit>
+            <trans-unit id="title.received">
+                <source>title.received</source>
+                <target>Received</target>
+            </trans-unit>
+            <trans-unit id="title.sent">
+                <source>title.sent</source>
+                <target>Sent</target>
+            </trans-unit>
+            <trans-unit id="title.registration">
+                <source>title.registration</source>
+                <target>Register</target>
+            </trans-unit>
+            <trans-unit id="title.routine_add">
+                <source>title.routine_add</source>
+                <target>Add a workout routine</target>
+            </trans-unit>
+            <trans-unit id="title.routine_assign">
+                <source>title.routine_assign</source>
+                <target>Assign a workout routine</target>
+            </trans-unit>
+            <trans-unit id="title.routine_delete">
+                <source>title.routine_delete</source>
+                <target>Delete a workout routine</target>
+            </trans-unit>
+            <trans-unit id="title.routine_edit">
+                <source>title.routine_edit</source>
+                <target>Edit a workout routine</target>
+            </trans-unit>
+            <trans-unit id="title.routine_share">
+                <source>title.routine_share</source>
+                <target>Make available a workout routine</target>
+            </trans-unit>
+            <trans-unit id="title.routines">
+                <source>title.routines</source>
+                <target>Workout routines</target>
+            </trans-unit>
+            <trans-unit id="title.society">
+                <source>title.society</source>
+                <target>Society</target>
+            </trans-unit>
+            <trans-unit id="title.user_edit">
+                <source>title.user_edit</source>
+                <target>Edit profile</target>
+            </trans-unit>
+            <trans-unit id="title.workout">
+                <source>title.workout</source>
+                <target>Workout</target>
+            </trans-unit>
+            <trans-unit id="title.workout_add">
+                <source>title.workout_add</source>
+                <target>Add a workout</target>
+            </trans-unit>
+            <trans-unit id="title.workout_delete">
+                <source>title.workout_delete</source>
+                <target>Delete a workout</target>
+            </trans-unit>
+            <trans-unit id="title.workout_edit">
+                <source>title.workout_edit</source>
+                <target>Edit a workout</target>
+            </trans-unit>
+            <trans-unit id="title.workout_invite">
+                <source>title.workout_invite</source>
+                <target>Invite on workout</target>
+            </trans-unit>
+            <trans-unit id="title.workouts">
+                <source>title.workouts</source>
+                <target>Workouts</target>
+            </trans-unit>
+            <trans-unit id="warning.delete">
+                <source>warning.delete</source>
+                <target>Are you sure you want to delete this item?</target>
+            </trans-unit>
+            <trans-unit id="warning.comment_delete">
+                <source>warning.comment_delete</source>
+                <target>Are you sure you want to delete this comment?</target>
+            </trans-unit>
+        </body>
+    </file>
+</xliff>

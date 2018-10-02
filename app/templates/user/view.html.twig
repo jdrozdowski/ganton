@@ -1,0 +1,70 @@
+{% extends 'base.html.twig' %}
+
+{% block title %} | @{{ user|length ? user.login  : 'message.record_not_found'|trans }}{% endblock %}
+
+{% block active_society 'navigation__link--active' %}
+
+{% block content %}
+    <header class="subpage-header">
+        {% if user|length %}
+            <h2 class="subpage-header__title subpage-header__title--small">{{ 'title.society'|trans }}</h2>
+            <div class="clearfix">
+                <h3 class="subpage-header__title pull-left">
+                    {{ user.firstname ~ ' ' ~ user.surname ~ ' | ' ~  user.name|trans }}<br>
+                    <small>{{ '@' ~ user.login }}</small>
+                </h3>
+
+                <div class="pull-right">
+                    {% if app.user.id != user.user_id %}
+                        <a href="{{ url('message_add', {'username': user.login}) }}" class="btn btn-primary">
+                            <span class="glyphicon glyphicon-comment"></span> {{ 'action.send'|trans }}
+                        </a>
+                    {% else %}
+                        <a href="{{ url('user_edit', {'id': user.user_id}) }}" class="btn btn-warning">
+                            <span class="glyphicon glyphicon-pencil"></span> {{ 'action.edit'|trans }}
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+        {% else %}
+            <h2 class="subpage-header__title">{{ 'title.society'|trans }}</h2>
+        {% endif %}
+    </header>
+
+    <hr class="hr--dark">
+
+    {% if user|length %}
+        <dl class="dl-horizontal">
+            <dt>{{ 'label.location'|trans }}:</dt>
+            <dd>{{ user.location }}</dd>
+            <dt>{{ 'label.birthdate'|trans }}:</dt>
+            <dd>{{ user.birthdate }}</dd>
+            {% if user.height|length %}
+                <dt>{{ 'label.height'|trans }}:</dt>
+                <dd>{{ user.height }} cm</dd>
+            {% endif %}
+            {% if user.weight|length %}
+                <dt>{{ 'label.user_weight'|trans }}:</dt>
+                <dd>{{ user.weight }} kg</dd>
+            {% endif %}
+        </dl>
+
+        <hr class="hr--dark">
+
+        {% if app.user.id == user.user_id %}
+            <section>
+                <h4>{{ 'title.change_password'|trans }}</h4>
+                <a href="{{ url('user_change_password', {'id': app.user.id}) }}" class="btn btn-primary">
+                    {{ 'action.change_password'|trans}}
+                </a>
+            </section>
+        {% endif %}
+
+    {% else %}
+        <p>{{ 'message.record_not_found'|trans }}</p>
+    {% endif %}
+
+    <a href="{{ url('user_index') }}" class="btn btn-default back-button">
+        <i class="fa fa-long-arrow-left"></i> {{ 'label.back_to_list'|trans}}
+    </a>
+{% endblock content %}

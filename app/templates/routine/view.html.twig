@@ -1,0 +1,98 @@
+{% extends 'base.html.twig' %}
+
+{% block title %} | {{ routine|length ? routine.name : 'message.record_not_found'|trans }}{% endblock %}
+
+{% block active_routine 'navigation__link--active' %}
+
+{% block content %}
+    <header class="subpage-header">
+        {% if routine|length %}
+            <h2 class="subpage-header__title subpage-header__title--small">{{ 'title.routines'|trans }}</h2>
+            <div class="clearfix">
+                <h3 class="subpage-header__title pull-left">{{ routine.name }}</h3>
+
+                <div class="pull-right">
+                    <a href="{{ url('routine_assign', {'id': routine.workout_routine_id}) }}" class="btn btn-primary">
+                        <span class="glyphicon glyphicon-share-alt"></span> {{ 'action.assign'|trans }}
+                    </a>
+                    <a href="{{ url('routine_share', {'id': routine.workout_routine_id}) }}" class="btn btn-primary">
+                        <span class="glyphicon glyphicon-share-alt"></span> {{ 'action.share'|trans }}
+                    </a>
+                    <a href="{{ url('routine_edit', {'id': routine.workout_routine_id}) }}" class="btn btn-warning">
+                        <span class="glyphicon glyphicon-pencil"></span> {{ 'action.edit'|trans }}
+                    </a>
+                    <a href="{{ url('routine_delete', {'id': routine.workout_routine_id}) }}" class="btn btn-danger">
+                        <span class="glyphicon glyphicon-trash"></span> {{ 'action.delete'|trans }}
+                    </a>
+                </div>
+            </div>
+
+            <table class="info-table table table-bordered table-condensed">
+                <thead>
+                    <tr class="active">
+                        <th class="text-uppercase">{{ 'label.author'|trans }}</th>
+                        <th class="text-uppercase">{{ 'label.number_of_days'|trans }}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>
+                            {% if routine.author_data %}
+                                <a href="{{ url('user_view', {'id': routine.author}) }}">
+                                    {{ routine.author_data.firstname ~ ' ' ~ routine.author_data.surname }}
+                                    <small>{{ ' @' ~ routine.author_data.login }}</small>
+                                </a>
+                            {% else %}
+                                {{ 'message.account_removed'|trans }}
+                            {% endif %}
+                        </td>
+                        <td>
+                            {{ routine.number_of_days|default(0) }}
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        {% else %}
+            <h2 class="subpage-header__title">{{ 'title.routines'|trans }}</h2>
+        {% endif %}
+    </header>
+
+    <hr class="hr--dark">
+
+    {% if routine|length %}
+        {% for day in routine.days %}
+            <table class="table table-hover">
+                <caption class="text-uppercase">{{ ('label.' ~ day.weekday)|trans }}</caption>
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th class="table__row--name">{{ 'label.exercise'|trans }}</th>
+                        <th>{{ 'label.sets'|trans }}</th>
+                        <th>{{ 'label.reps'|trans }}</th>
+                        <th>{{ 'label.weight'|trans }}</th>
+                        <th><i class="fa fa-star fa-star--record"></i> {{ 'label.record'|trans }}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for exercise in day.exercises %}
+                        <tr>
+                            <td>{{ loop.index }}</td>
+                            <td class="table__row--name text-capitalize">{{ exercise.name }}</td>
+                            <td>{{ exercise.sets }}</td>
+                            <td>{{ exercise.reps }}</td>
+                            <td>{{ exercise.weight|default('-') }}</td>
+                            <td>{{ exercise.record|default('-') }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% endfor %}
+    {% else %}
+        <p>{{ 'message.record_not_found'|trans }}</p>
+    {% endif %}
+
+    <a class="btn btn-default back-button" href="{{ url('routine_index') }}">
+        <i class="fa fa-long-arrow-left"></i>
+        {{ 'label.back_to_list'|trans}}
+    </a>
+{% endblock content %}
